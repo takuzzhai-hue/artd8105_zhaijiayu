@@ -1,5 +1,6 @@
 1 · Why this paper
 This paper sits at the intersection of wet-plate photographic process × AI-generated imagery × Benjamin's theory of aura. My own research is likewise concerned with the photographic medium, the non-reproducible indexicality of the image as an ontological object, and AI-generated imagery. The paper also carries out a full argumentative cycle—an art-practice workflow, a theoretical argument, and a user study—which is rare among the largely theory-driven, taxonomic papers in photography research.
+
 2 · Summary
 Topic: The authors propose a method for re-simulating wet-plate photographs in today's era of AI generation, and use it to re-open the question of whether Benjamin's aura can still exist in this contemporary AI-generative moment.
 The problem and why it matters: Benjamin held that photography, as a form of technical reproduction, dissolves the aura of the artwork. Today, generative AI pushes "reproduction" to its extreme, while NFTs have introduced a new kind of one-of-a-kind token. Wet-plate collodion, as an old photographic medium, holds a special position precisely because of its non-reproducibility and its archaic craft. The authors ask: can these two be "chained" together within a digital product, so that a simulated image produced by AI can regain its aura?
@@ -9,14 +10,17 @@ Methodological innovation:
 3. Using a UV inkjet printer with white ink to print the positive onto a glass plate, simulating the physical viewing experience of the ambrotype (a positive image against a black ground, with glass as the medium).
 Key benefits (as the authors claim): retaining the "experiential quality / uniqueness" of the wet plate while gaining the scalability of digital technology, and at the same time greatly simplifying the process from the traditional multi-step chemical workflow.
 Advance over prior work: Using a four-quadrant diagram (Fig. 7, "organic–mechanical" × "handcrafted–industrial"), the authors claim that traditional processes almost never occupy the "both organic and industrial" position, and that their method—combining generative AI + NFT (classed as organic) with digital fabrication (industrial)—occupies this empty quadrant, thus constituting "a new position in the history of photography that did not previously exist." They provide semi-structured interviews with 10 photography experts as qualitative evidence.
+
 3 · Critical thinking
 * Conceptual sleight of hand: a misreading of the concept of aura—here aura is equated with "scarcity / uniqueness."
 * The aura of the wet plate arises from an irreproducible chemical accident; but today's generated image can be re-run in full. One is randomness at the chemical level, the other is simulated noise within present-day AI generation.
 * This four-quadrant diagram is an entirely novel form, and it always feels somewhat like all the elements have simply been gathered and stacked together. It does not respect photographic theory, nor does it offer any new exploration of future directions. The very fact that no one has made such a four-quadrant diagram before suggests it is over-inventive; I believe the work should show more respect for the theoretical regularities of photography and pursue an exploration that is aligned with them.
 * The concept of the NFT has, over the past couple of years, ceased to be frequently discussed, and this concept can no longer hold up.
+
 4 · Creative thinking
 * I would choose to discuss how the "taxonomy of photographic processes" breaks down in the AI era—using this as a means to reverse-engineer the historical premises on which it was built, and then to show how a new technology (AI) exposes and invalidates those premises.
 * I would also discuss the internal definition of the image recorded by wet-plate collodion, rather than remaining only at the level of the medium's premises. And I would argue that, under AI generation, what happens is not merely a simulation of past technology but a new way of carrying theoretical concepts.
+
 7 · Take-home
 * What I learned: how to turn a purely theoretical proposition into an experimentable paper, comprising design principles → system implementation → qualitative interviews → positioning map, and so on.
 * The structure (a clear contribution list, design principles, a diagrammatic historical timeline and positioning map, an arrangement of qualitative evidence) is worth imitating. But its theoretical rigor is insufficient (conceptual sleight of hand, circular evaluation, conclusions that exceed the data). One needs to balance the two.
