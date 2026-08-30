@@ -1,0 +1,32 @@
+instruction:The figure is an hourglass-shaped structure made of disconnected individual lines. The lines gradually increase in length and then decrease again, with each line rotating 5 degrees to the right. Two sets of parallel thin lines converge toward the center from above and below, forming a narrow, interwoven structure in the middle, and then expand outward in opposite directions. The visual structure consists of two groups of straight lines arranged into two opposing fan shapes. The lines in the upper section extend upward and gradually spread apart, forming an open fan shape. The overall outline resembles an elongated hourglass, a twisted ribbon, or two sets of parallel lines interweaving with each other. The middle is a twist (rope/cloth from one face to the other), not a point. The two fans do not join at a vertex.
+
+Name:zhaijiayu
+
+Parametervalues：
+twisted-cloth-seed-1.svg
+
+seed: 1
+lineCount: 14
+stepAngle: 1.5°
+longestFraction: 0.37
+shortestRatio: 0.43
+waistWidth: 58 mm
+startAngle: 0°
+twisted-cloth-seed-2.svg
+
+seed: 2
+lineCount: 16
+stepAngle: 10°
+longestFraction: 0.39
+shortestRatio: 0.47
+waistWidth: 61 mm
+startAngle: -3°
+twisted-cloth-seed-3.svg
+
+seed: 3
+lineCount: 38
+stepAngle: 2.5°
+longestFraction: 0.4
+shortestRatio: 0.41
+waistWidth: 42 mm
+startAngle: 1°
