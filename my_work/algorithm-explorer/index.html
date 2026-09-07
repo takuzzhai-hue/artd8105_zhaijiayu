@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ALGORITHM EXPLORER</title>
+  <style>
+    :root {
+      --bg: #2c2c2c;
+      --line: #f2f2f2;
+      --muted: #b8b8b8;
+      --fill: #1e1e1e;
+      --accent: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; height: 100%;
+      background: var(--bg); color: var(--accent);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+    .app {
+      height: 100%; display: flex; flex-direction: column;
+      padding: 10px; gap: 8px;
+    }
+    header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap;
+    }
+    h1 { font-size: 13px; font-weight: 400; letter-spacing: 0.12em; margin: 0; }
+    nav { display: flex; flex-wrap: wrap; gap: 6px; }
+    nav button, .btn, .preset {
+      background: transparent; color: var(--accent);
+      border: 1px solid var(--line); padding: 5px 8px;
+      font: inherit; cursor: pointer; letter-spacing: 0.02em;
+    }
+    nav button.active, .preset.active { background: #fff; color: #111; }
+    nav button:hover, .btn:hover, .preset:hover { background: #444; }
+    .preset.active:hover { background: #fff; }
+    .vis {
+      flex: 1.45; min-height: 0; border: 1px solid var(--line);
+      position: relative; background: var(--fill);
+      display: flex; flex-direction: column;
+    }
+    .vis .label, .panel .label {
+      position: absolute; top: 8px; left: 10px;
+      letter-spacing: 0.14em; pointer-events: none; z-index: 2;
+    }
+    #vis-hud {
+      position: absolute; top: 8px; right: 12px; z-index: 2;
+      text-align: right; color: #fff; letter-spacing: 0.04em;
+      pointer-events: none; line-height: 1.4;
+    }
+    .vis-split { display: flex; flex: 1; min-width: 0; min-height: 0; width: 100%; }
+    .vis-canvas { flex: 1; min-width: 0; min-height: 0; position: relative; }
+    .vis-canvas canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; }
+    #lsys-string {
+      display: none; width: 34%; min-width: 180px; margin: 0;
+      padding: 28px 10px 10px; border-left: 1px solid var(--line);
+      overflow: auto; white-space: pre-wrap; word-break: break-all;
+      color: #cfcfcf; font: inherit; font-size: 11px; line-height: 1.45;
+      background: #191919;
+    }
+    body.mode-lsys #lsys-string { display: block; }
+    canvas { cursor: crosshair; }
+    textarea, input[type="text"] {
+      width: 100%; background: #191919; color: #fff; border: 1px solid #888;
+      font: inherit; padding: 6px; margin: 4px 0 8px;
+    }
+    .gene {
+      border: 1px dashed #666; padding: 6px 8px; margin-top: 8px;
+      line-height: 1.45; color: #ddd;
+    }
+    #hover-tip {
+      position: fixed; z-index: 20; max-width: 260px;
+      background: #111; color: #fff; border: 1px solid #fff;
+      padding: 8px 10px; font-size: 11px; line-height: 1.4;
+      pointer-events: none; display: none;
+    }
+    .bottom {
+      flex: 0.95; min-height: 220px; display: grid;
+      grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .panel {
+      border: 1px solid var(--line); position: relative;
+      overflow: auto; padding: 28px 12px 12px;
+      background: transparent;
+    }
+    .group { margin: 0 0 12px; }
+    .group h3 {
+      margin: 0 0 6px; font-size: 11px; font-weight: 400;
+      color: var(--muted); letter-spacing: 0.08em;
+    }
+    .row { display: flex; flex-wrap: wrap; gap: 6px; }
+    label.slider {
+      display: block; margin: 0 0 10px; color: var(--muted);
+    }
+    label.slider span { float: right; color: #fff; }
+    input[type="range"] { width: 100%; margin-top: 3px; accent-color: #fff; }
+    .hint { display: block; clear: both; font-size: 11px; color: #9a9a9a; margin: 4px 0 0; line-height: 1.35; font-weight: normal; }
+    #how-explain { line-height: 1.45; color: #e8e8e8; margin: 0 0 14px; }
+    #how-explain p { margin: 0 0 8px; }
+    #how-state {
+      border: 1px dashed var(--line); padding: 8px;
+      white-space: pre-wrap; line-height: 1.5; color: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>ALGORITHM EXPLORER</h1>
+      <nav id="algo-nav"></nav>
+    </header>
+    <section class="vis">
+      <div class="label" id="vis-label">VISUAL SIMULATION</div>
+      <div id="vis-hud"></div>
+      <div class="vis-split">
+        <div class="vis-canvas"><canvas id="c"></canvas></div>
+        <pre id="lsys-string"></pre>
+      </div>
+    </section>
+    <div class="bottom">
+      <section class="panel" id="params-panel">
+        <div class="label">PARAMETERS</div>
+        <div class="group" id="sim-group">
+          <h3>SIMULATION</h3>
+          <div class="row" id="sim-bar"></div>
+        </div>
+        <div id="params"></div>
+      </section>
+      <section class="panel">
+        <div class="label">HOW IT WORKS</div>
+        <div id="how-explain"></div>
+        <div id="how-state"></div>
+      </section>
+    </div>
+  </div>
+  <div id="hover-tip"></div>
+<script>
+(function () {
+  const canvas = document.getElementById("c");
+  const ctx = canvas.getContext("2d", { alpha: false });
+  const paramsEl = document.getElementById("params");
+  const explainEl = document.getElementById("how-explain");
+  const stateEl = document.getElementById("how-state");
+  const navEl = document.getElementById("algo-nav");
+  const hudEl = document.getElementById("vis-hud");
+  const strEl = document.getElementById("lsys-string");
+  const tipEl = document.getElementById("hover-tip");
+
+  const ALGOS = [
+    { id: "rd", name: "Reaction-Diffusion" },
+    { id: "boids", name: "Flocking / Boids" },
+    { id: "lsys", name: "L-Systems" },
+    { id: "ga", name: "Genetic Algorithms" },
+    { id: "ca", name: "Cellular Automata" }
+  ];
+
+  let algo = "rd";
+  let W = 0, H = 0, dpr = 1;
+  let running = true;
+  let mouse = { x: 0, y: 0, down: false, inside: false };
+  let lastStateWrite = 0;
+
+  function resize() {
+    const r = canvas.parentElement.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = Math.max(20, Math.floor(r.width));
+    H = Math.max(20, Math.floor(r.height));
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    engines[algo].resize();
+  }
+
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function rand() { return Math.random(); }
+  function irand(n) { return Math.floor(rand() * n); }
+
+  function clearBg() {
+    ctx.fillStyle = "#1e1e1e";
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  function palette(name, t) {
+    t = clamp(t, 0, 1);
+    if (name === "ink") {
+      const g = Math.floor(255 * Math.pow(t, 0.85));
+      return [g, g, g];
+    }
+    if (name === "magma") {
+      return [
+        Math.floor(20 + 240 * t),
+        Math.floor(8 + 40 * t + 80 * t * t),
+        Math.floor(30 + 40 * (1 - t) + 180 * t * t)
+      ];
+    }
+    if (name === "ocean") {
+      return [Math.floor(10 + 40 * t), Math.floor(40 + 160 * t), Math.floor(80 + 160 * t)];
+    }
+    if (name === "copper") {
+      return [Math.floor(40 + 200 * t), Math.floor(20 + 90 * t), Math.floor(10 + 30 * t)];
+    }
+    if (name === "neon") {
+      return [Math.floor(255 * t), Math.floor(40 + 200 * (1 - t) * t), Math.floor(255 * (1 - t))];
+    }
+    if (name === "forest") {
+      return [Math.floor(20 + 80 * t), Math.floor(40 + 180 * t), Math.floor(30 + 50 * t)];
+    }
+    return [Math.floor(255 * t), Math.floor(255 * t * 0.7), Math.floor(255 * (1 - t) * 0.5)];
+  }
+
+  /* ---------- UI helpers ---------- */
+  function el(html) {
+    const d = document.createElement("div");
+    d.innerHTML = html;
+    return d.firstElementChild;
+  }
+  function group(title) {
+    const g = document.createElement("div");
+    g.className = "group";
+    g.innerHTML = `<h3>${title}</h3>`;
+    return g;
+  }
+  function btn(label, fn, cls) {
+    const b = document.createElement("button");
+    b.className = cls || "btn";
+    b.textContent = label;
+    b.addEventListener("click", fn);
+    return b;
+  }
+  function slider(label, min, max, step, value, oninput, hint) {
+    const wrap = document.createElement("label");
+    wrap.className = "slider";
+    wrap.dataset.tip = hint || "";
+    const val = document.createElement("span");
+    val.textContent = value;
+    wrap.append(label + " ", val);
+    const inp = document.createElement("input");
+    inp.type = "range"; inp.min = min; inp.max = max; inp.step = step; inp.value = value;
+    inp.addEventListener("input", () => {
+      val.textContent = inp.value;
+      oninput(+inp.value);
+    });
+    wrap.appendChild(inp);
+    wrap._input = inp;
+    wrap._val = val;
+    return wrap;
+  }
+  function presetRow(items, current, apply) {
+    const row = document.createElement("div");
+    row.className = "row";
+    items.forEach((it) => {
+      const b = btn(it.name, () => {
+        apply(it);
+        [...row.querySelectorAll("button")].forEach((x) => x.classList.toggle("active", x === b));
+      }, "preset");
+      if (it.id === current || it.name === current) b.classList.add("active");
+      row.appendChild(b);
+    });
+    return row;
+  }
+
+  /* ===================== REACTION-DIFFUSION ===================== */
+  const rd = {
+    gw: 160, gh: 90,
+    u: null, v: null, u2: null, v2: null,
+    F: 0.037, k: 0.06, Du: 0.16, Dv: 0.08, dt: 1,
+    steps: 6, palette: "magma", brush: 6,
+    presetName: "Mitosis",
+    setup() {
+      this.gw = Math.max(80, Math.floor(W / 4));
+      this.gh = Math.max(46, Math.floor(H / 4));
+      const n = this.gw * this.gh;
+      this.u = new Float32Array(n);
+      this.v = new Float32Array(n);
+      this.u2 = new Float32Array(n);
+      this.v2 = new Float32Array(n);
+      this.seed("center");
+    },
+    resize() { this.setup(); },
+    idx(x, y) {
+      const w = this.gw, h = this.gh;
+      x = (x + w) % w; y = (y + h) % h;
+      return y * w + x;
+    },
+    seed(kind) {
+      const w = this.gw, h = this.gh;
+      this.u.fill(1); this.v.fill(0);
+      const stamp = (x, y, r, amt) => {
+        for (let j = -r; j <= r; j++) for (let i = -r; i <= r; i++) {
+          if (i * i + j * j <= r * r) {
+            const p = this.idx(x + i, y + j);
+            this.v[p] = Math.max(this.v[p], amt);
+            this.u[p] = 1 - this.v[p] * 0.5;
+          }
+        }
+      };
+      if (kind === "center") stamp(w >> 1, h >> 1, 8, 1);
+      else if (kind === "dots") {
+        for (let i = 0; i < 28; i++) stamp(irand(w), irand(h), 2 + irand(4), 0.9);
+      }
+      else if (kind === "ring") {
+        const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.22;
+        for (let a = 0; a < 360; a += 3) stamp(cx + R * Math.cos(a * Math.PI / 180) | 0, cy + R * Math.sin(a * Math.PI / 180) | 0, 2, 1);
+      }
+      else if (kind === "line") {
+        for (let x = 8; x < w - 8; x++) stamp(x, h >> 1, 2, 1);
+      }
+      else if (kind === "grid") {
+        for (let y = 10; y < h; y += 16) for (let x = 10; x < w; x += 16) stamp(x, y, 3, 1);
+      }
+      else if (kind === "x") {
+        for (let i = 6; i < Math.min(w, h) - 6; i++) {
+          stamp(i, i * h / w | 0, 2, 1);
+          stamp(w - i, i * h / w | 0, 2, 1);
+        }
+      }
+      else if (kind === "noise") {
+        for (let i = 0; i < w * h; i++) if (rand() < 0.08) { this.v[i] = rand(); this.u[i] = 1 - this.v[i] * 0.4; }
+      }
+      else if (kind === "frame") {
+        for (let x = 0; x < w; x++) { stamp(x, 6, 2, 1); stamp(x, h - 7, 2, 1); }
+        for (let y = 0; y < h; y++) { stamp(6, y, 2, 1); stamp(w - 7, y, 2, 1); }
+      }
+      else if (kind === "spiral") {
+        let a = 0, r = 2;
+        while (r < Math.min(w, h) * 0.4) {
+          stamp(w / 2 + r * Math.cos(a) | 0, h / 2 + r * Math.sin(a) | 0, 2, 1);
+          a += 0.35; r += 0.18;
+        }
+      }
+      else if (kind === "text") {
+        const cx = w >> 1, cy = h >> 1;
+        for (let i = -18; i <= 18; i++) stamp(cx + i, cy, 2, 1);
+        for (let i = -10; i <= 10; i++) stamp(cx, cy + i, 2, 1);
+      }
+    },
+    paint() {
+      if (!mouse.down || !mouse.inside) return;
+      const x = mouse.x / W * this.gw | 0;
+      const y = mouse.y / H * this.gh | 0;
+      const r = this.brush | 0;
+      for (let j = -r; j <= r; j++) for (let i = -r; i <= r; i++) {
+        if (i * i + j * j <= r * r) {
+          const p = this.idx(x + i, y + j);
+          this.v[p] = 1; this.u[p] = 0.5;
+        }
+      }
+    },
+    step() {
+      this.paint();
+      if (!running) return;
+      const { gw: w, gh: h, F, k, Du, Dv, dt } = this;
+      const nIter = this.steps;
+      for (let s = 0; s < nIter; s++) {
+        const u = this.u, v = this.v, u2 = this.u2, v2 = this.v2;
+        for (let y = 0; y < h; y++) {
+          const ym = (y - 1 + h) % h, yp = (y + 1) % h;
+          for (let x = 0; x < w; x++) {
+            const xm = (x - 1 + w) % w, xp = (x + 1) % w;
+            const i = y * w + x;
+            const uc = u[i], vc = v[i];
+            const lapU = u[ym * w + x] + u[yp * w + x] + u[y * w + xm] + u[y * w + xp] - 4 * uc;
+            const lapV = v[ym * w + x] + v[yp * w + x] + v[y * w + xm] + v[y * w + xp] - 4 * vc;
+            const uvv = uc * vc * vc;
+            u2[i] = clamp(uc + (Du * lapU - uvv + F * (1 - uc)) * dt, 0, 1);
+            v2[i] = clamp(vc + (Dv * lapV + uvv - (F + k) * vc) * dt, 0, 1);
+          }
+        }
+        this.u = u2; this.v = v2; this.u2 = u; this.v2 = v;
+      }
+    },
+    render() {
+      const img = ctx.createImageData(this.gw, this.gh);
+      const d = img.data, v = this.v;
+      for (let i = 0; i < v.length; i++) {
+        const c = palette(this.palette, v[i] * 2.2);
+        const p = i * 4;
+        d[p] = c[0]; d[p + 1] = c[1]; d[p + 2] = c[2]; d[p + 3] = 255;
+      }
+      if (!this._tmp) this._tmp = document.createElement("canvas");
+      this._tmp.width = this.gw; this._tmp.height = this.gh;
+      this._tmp.getContext("2d").putImageData(img, 0, 0);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(this._tmp, 0, 0, W, H);
+    },
+    applyPreset(p) {
+      this.F = p.F; this.k = p.k; this.Du = p.Du ?? 0.16; this.Dv = p.Dv ?? 0.08;
+      this.presetName = p.name;
+      this.seed(p.seed || "center");
+      buildParams();
+    },
+    meanV() {
+      let s = 0; for (let i = 0; i < this.v.length; i++) s += this.v[i];
+      return s / this.v.length;
+    },
+    randomize() {
+      const p = RD_PRESETS[irand(RD_PRESETS.length)];
+      this.applyPreset(p);
+      const seeds = ["center", "dots", "ring", "line", "noise", "spiral"];
+      this.seed(seeds[irand(seeds.length)]);
+    }
+  };
+
+  const RD_PRESETS = [
+    { id: "mitosis", name: "Mitosis", F: 0.0367, k: 0.0649, seed: "center" },
+    { id: "spots", name: "Spots", F: 0.035, k: 0.065, seed: "dots" },
+    { id: "sparse", name: "Sparse spots", F: 0.022, k: 0.059, seed: "dots" },
+    { id: "worms", name: "Worms", F: 0.046, k: 0.063, seed: "center" },
+    { id: "maze", name: "Labyrinth", F: 0.029, k: 0.057, seed: "noise" },
+    { id: "coral", name: "Coral", F: 0.0545, k: 0.062, seed: "dots" },
+    { id: "waves", name: "Waves", F: 0.014, k: 0.045, seed: "line" },
+    { id: "soliton", name: "Solitons", F: 0.03, k: 0.062, seed: "dots" },
+    { id: "fingerprint", name: "Fingerprint", F: 0.055, k: 0.062, seed: "ring" },
+    { id: "holes", name: "Holes", F: 0.039, k: 0.058, seed: "noise" },
+    { id: "chaos", name: "Chaos", F: 0.026, k: 0.051, seed: "center" },
+    { id: "decay", name: "Decay", F: 0.08, k: 0.07, seed: "center" },
+    { id: "bubbles", name: "Bubbles", F: 0.042, k: 0.059, seed: "grid" },
+    { id: "uskate", name: "U-skate", F: 0.062, k: 0.0609, seed: "center" },
+    { id: "pulsing", name: "Pulsing", F: 0.025, k: 0.06, seed: "ring" },
+    { id: "worms2", name: "Stripes", F: 0.078, k: 0.061, seed: "line" },
+    { id: "splotch", name: "Splotches", F: 0.03, k: 0.055, seed: "noise" },
+    { id: "spiral", name: "Spiral seed", F: 0.037, k: 0.06, seed: "spiral" }
+  ];
+
+  /* ===================== BOIDS ===================== */
+  const boids = {
+    agents: [],
+    n: 90,
+    ws: 1.6, wa: 1.1, wc: 1.0,
+    radius: 70, sepR: 22, maxSpeed: 2.6, maxForce: 0.08,
+    fov: 360, noise: 0.05, trail: 0.18,
+    showSense: true, mouseMode: "attract", inspect: 0,
+    presetName: "Flock",
+    wrap: true,
+    setup() { this.respawn(this.n); },
+    randomize() {
+      this.respawn(40 + irand(80));
+      this.ws = rand() * 3; this.wa = rand() * 3; this.wc = rand() * 3;
+      this.radius = 40 + irand(80);
+      this.presetName = "Random mix";
+      buildParams();
+    },
+    resize() { if (!this.agents.length) this.setup(); },
+    respawn(n) {
+      this.n = n;
+      this.agents = [];
+      for (let i = 0; i < n; i++) {
+        this.agents.push({
+          x: rand() * W, y: rand() * H,
+          vx: (rand() - 0.5) * 2, vy: (rand() - 0.5) * 2
+        });
+      }
+    },
+    limit(x, y, m) {
+      const l = Math.hypot(x, y) || 1e-6;
+      if (l > m) { x = x / l * m; y = y / l * m; }
+      return [x, y];
+    },
+    step() {
+      if (mouse.inside) { this.pred.x = mouse.x; this.pred.y = mouse.y; }
+      if (!running) return;
+      const a = this.agents;
+      const r = this.radius, sr = this.sepR, halfFov = this.fov * Math.PI / 360;
+      const next = a.map((b) => {
+        let sx = 0, sy = 0, ax = 0, ay = 0, cx = 0, cy = 0, ns = 0, na = 0;
+        for (let i = 0; i < a.length; i++) {
+          const o = a[i];
+          if (o === b) continue;
+          let dx = o.x - b.x, dy = o.y - b.y;
+          if (this.wrap) {
+            if (dx > W / 2) dx -= W; if (dx < -W / 2) dx += W;
+            if (dy > H / 2) dy -= H; if (dy < -H / 2) dy += H;
+          }
+          const d2 = dx * dx + dy * dy;
+          if (d2 > r * r || d2 === 0) continue;
+          if (this.fov < 360) {
+            const ang = Math.atan2(b.vy, b.vx);
+            const rel = Math.atan2(dy, dx);
+            let diff = rel - ang;
+            while (diff > Math.PI) diff -= Math.PI * 2;
+            while (diff < -Math.PI) diff += Math.PI * 2;
+            if (Math.abs(diff) > halfFov) continue;
+          }
+          const d = Math.sqrt(d2);
+          if (d < sr) { sx -= dx / d; sy -= dy / d; ns++; }
+          ax += o.vx; ay += o.vy;
+          cx += dx; cy += dy; na++;
+        }
+        let fx = 0, fy = 0;
+        if (ns) { const s = this.limit(sx, sy, this.maxSpeed); fx += (s[0] - b.vx) * this.ws; fy += (s[1] - b.vy) * this.ws; }
+        if (na) {
+          ax /= na; ay /= na;
+          const al = this.limit(ax, ay, this.maxSpeed);
+          fx += (al[0] - b.vx) * this.wa; fy += (al[1] - b.vy) * this.wa;
+          const cl = this.limit(cx / na, cy / na, this.maxSpeed);
+          fx += (cl[0] - b.vx) * this.wc; fy += (cl[1] - b.vy) * this.wc;
+        }
+        if (this.mouseMode !== "off" && mouse.inside) {
+          let dx = mouse.x - b.x, dy = mouse.y - b.y;
+          const d = Math.hypot(dx, dy) || 1;
+          const mag = 1.4 / Math.max(d, 18);
+          if (this.mouseMode === "attract") { fx += dx * mag; fy += dy * mag; }
+          else { fx -= dx * mag; fy -= dy * mag; }
+        }
+        fx += (rand() - 0.5) * this.noise;
+        fy += (rand() - 0.5) * this.noise;
+        const f = this.limit(fx, fy, this.maxForce);
+        let vx = b.vx + f[0], vy = b.vy + f[1];
+        const sp = this.limit(vx, vy, this.maxSpeed);
+        let x = b.x + sp[0], y = b.y + sp[1];
+        if (this.wrap) { x = (x + W) % W; y = (y + H) % H; }
+        else { if (x < 0 || x > W) sp[0] *= -1; if (y < 0 || y > H) sp[1] *= -1; x = clamp(x, 0, W); y = clamp(y, 0, H); }
+        return { x, y, vx: sp[0], vy: sp[1] };
+      });
+      this.agents = next;
+    },
+    render() {
+      ctx.fillStyle = `rgba(30,30,30,${this.trail})`;
+      ctx.fillRect(0, 0, W, H);
+      const a = this.agents;
+      let focus = a[this.inspect] || a[0];
+      if (mouse.inside && a.length) {
+        let best = 1e9;
+        for (const b of a) {
+          const d = (b.x - mouse.x) ** 2 + (b.y - mouse.y) ** 2;
+          if (d < best) { best = d; focus = b; }
+        }
+      }
+      if (this.showSense && focus) {
+        ctx.beginPath();
+        ctx.strokeStyle = "rgba(255,255,255,0.28)";
+        ctx.arc(focus.x, focus.y, this.radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.strokeStyle = "rgba(255,180,80,0.45)";
+        ctx.arc(focus.x, focus.y, this.sepR, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.strokeStyle = "rgba(120,200,255,0.5)";
+        ctx.beginPath();
+        for (const o of a) {
+          if (o === focus) continue;
+          let dx = o.x - focus.x, dy = o.y - focus.y;
+          if (dx * dx + dy * dy <= this.radius * this.radius) {
+            ctx.moveTo(focus.x, focus.y);
+            ctx.lineTo(o.x, o.y);
+          }
+        }
+        ctx.stroke();
+      }
+      ctx.fillStyle = "#fff";
+      for (const b of a) {
+        const ang = Math.atan2(b.vy, b.vx);
+        ctx.beginPath();
+        ctx.moveTo(b.x + Math.cos(ang) * 7, b.y + Math.sin(ang) * 7);
+        ctx.lineTo(b.x + Math.cos(ang + 2.5) * 5, b.y + Math.sin(ang + 2.5) * 5);
+        ctx.lineTo(b.x + Math.cos(ang - 2.5) * 5, b.y + Math.sin(ang - 2.5) * 5);
+        ctx.closePath();
+        ctx.fill();
+      }
+      if (this.mouseMode !== "off" && mouse.inside) {
+        ctx.beginPath();
+        ctx.strokeStyle = this.mouseMode === "attract" ? "#8f8" : "#f88";
+        ctx.arc(mouse.x, mouse.y, 10, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+  };
+
+  const BOID_PRESETS = [
+    { name: "Flock", ws: 1.6, wa: 1.1, wc: 1.0, radius: 70, noise: 0.05 },
+    { name: "Tight cloud", ws: 0.6, wa: 1.4, wc: 2.2, radius: 90, noise: 0.02 },
+    { name: "Loose swarm", ws: 2.4, wa: 0.4, wc: 0.5, radius: 50, noise: 0.12 },
+    { name: "Stream", ws: 1.2, wa: 2.4, wc: 0.8, radius: 110, noise: 0.02 },
+    { name: "Mill / vortex", ws: 1.8, wa: 0.3, wc: 1.8, radius: 80, noise: 0.04 },
+    { name: "Crystal grid", ws: 3.2, wa: 0.2, wc: 1.4, radius: 40, sepR: 36, noise: 0 },
+    { name: "Explosion", ws: 4, wa: 0, wc: 0, radius: 80, noise: 0.2 },
+    { name: "Glue", ws: 0.2, wa: 0.2, wc: 3.5, radius: 120, noise: 0 },
+    { name: "School", ws: 1.4, wa: 1.8, wc: 1.2, radius: 60, fov: 200, noise: 0.03 },
+    { name: "Nervous", ws: 2, wa: 1, wc: 1, radius: 55, noise: 0.35, maxForce: 0.2 },
+    { name: "Slow dance", ws: 1.5, wa: 1.2, wc: 1.3, radius: 80, maxSpeed: 0.9, noise: 0.02 },
+    { name: "Ribbon", ws: 1, wa: 2.8, wc: 0.6, radius: 140, trail: 0.06, noise: 0.01 }
+  ];
+
+  /* ===================== L-SYSTEMS ===================== */
+  const lsys = {
+    axiom: "F",
+    rules: { F: "F[+F]F[-F]F" },
+    angle: 25, n: 3, jitter: 0, lenScale: 0.72, start: -90,
+    segLen: 10,
+    presetName: "simple tree",
+    lines: [], string: "F", generations: ["F"],
+    setup() { this.rebuild(); },
+    resize() { this.rebuild(); },
+    expandAll() {
+      const gens = [this.axiom];
+      let s = this.axiom;
+      const maxN = Math.max(0, this.n);
+      for (let i = 0; i < maxN; i++) {
+        let out = "";
+        for (const ch of s) out += this.rules[ch] != null ? this.rules[ch] : ch;
+        s = out;
+        gens.push(s);
+        if (s.length > 180000) break;
+      }
+      this.generations = gens;
+      this.string = gens[Math.min(this.n, gens.length - 1)] || "";
+      return this.string;
+    },
+    syncStringPanel() {
+      const shown = this.string.length > 4000 ? this.string.slice(0, 4000) + "\n…" : this.string;
+      strEl.textContent = "iteration " + this.n + "  (" + this.string.length + " symbols)\n\n" + shown;
+    },
+    rebuild() {
+      const str = this.expandAll();
+      this.syncStringPanel();
+      const ang0 = this.angle * Math.PI / 180;
+      let x = 0, y = 0, a = this.start * Math.PI / 180, step = this.segLen;
+      const stack = [];
+      const segs = [];
+      const jit = this.jitter;
+      for (const ch of str) {
+        if (ch === "F" || ch === "G" || ch === "A" || ch === "B" || ch === "0" || ch === "1") {
+          const nx = x + Math.cos(a) * step, ny = y + Math.sin(a) * step;
+          segs.push(x, y, nx, ny);
+          x = nx; y = ny;
+        } else if (ch === "f") {
+          x += Math.cos(a) * step; y += Math.sin(a) * step;
+        } else if (ch === "+") a += ang0 * (1 + (rand() - 0.5) * jit);
+        else if (ch === "-") a -= ang0 * (1 + (rand() - 0.5) * jit);
+        else if (ch === "|") a += Math.PI;
+        else if (ch === "[") { stack.push([x, y, a, step]); step *= this.lenScale; }
+        else if (ch === "]") {
+          const p = stack.pop();
+          if (p) { x = p[0]; y = p[1]; a = p[2]; step = p[3]; }
+        }
+      }
+      let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+      for (let i = 0; i < segs.length; i += 2) {
+        minx = Math.min(minx, segs[i]); maxx = Math.max(maxx, segs[i]);
+        miny = Math.min(miny, segs[i + 1]); maxy = Math.max(maxy, segs[i + 1]);
+      }
+      this.lines = segs;
+      this.bounds = { minx, miny, maxx, maxy };
+      this.symbolCount = str.length;
+    },
+    step() {},
+    render() {
+      clearBg();
+      const b = this.bounds;
+      if (!this.lines.length || !isFinite(b.minx)) return;
+      const pad = 24;
+      const bw = Math.max(1e-6, b.maxx - b.minx);
+      const bh = Math.max(1e-6, b.maxy - b.miny);
+      const sc = Math.min((W - pad * 2) / bw, (H - pad * 2) / bh);
+      const ox = (W - bw * sc) / 2 - b.minx * sc;
+      const oy = (H - bh * sc) / 2 - b.miny * sc;
+      ctx.beginPath();
+      ctx.strokeStyle = "#f3f3f3";
+      ctx.lineWidth = 1;
+      for (let i = 0; i < this.lines.length; i += 4) {
+        ctx.moveTo(this.lines[i] * sc + ox, this.lines[i + 1] * sc + oy);
+        ctx.lineTo(this.lines[i + 2] * sc + ox, this.lines[i + 3] * sc + oy);
+      }
+      ctx.stroke();
+    },
+    apply(p) {
+      this.axiom = p.axiom;
+      this.rules = { ...p.rules };
+      this.angle = p.angle;
+      this.n = p.n;
+      this.start = p.start ?? -90;
+      this.lenScale = p.lenScale ?? 1;
+      this.presetName = p.name;
+      this.rebuild();
+      buildParams();
+    },
+    randomize() {
+      this.apply(L_PRESETS[irand(L_PRESETS.length)]);
+      this.angle = 12 + irand(50);
+      this.rebuild();
+      buildParams();
+    }
+  };
+
+  const L_PRESETS = [
+    { name: "simple tree", axiom: "F", rules: { F: "F[+F]F[-F]F" }, angle: 25, n: 3, start: -90, lenScale: 0.72 },
+    { name: "dense plant", axiom: "X", rules: { X: "F+[[X]-X]-F[-FX]+X", F: "FF" }, angle: 22, n: 5, start: -90, lenScale: 0.85 },
+    { name: "fractal branch", axiom: "F", rules: { F: "FF+[+F-F-F]-[-F+F+F]" }, angle: 22, n: 4, start: -90, lenScale: 0.78 },
+    { name: "abstract geometric", axiom: "F++F++F++F", rules: { F: "F+F--F+F" }, angle: 45, n: 4, start: 0, lenScale: 1 },
+    { name: "Koch", axiom: "F", rules: { F: "F+F-F-F+F" }, angle: 90, n: 4, start: 0, lenScale: 1 },
+    { name: "Dragon", axiom: "FX", rules: { X: "X+YF+", Y: "-FX-Y" }, angle: 90, n: 11, start: 0, lenScale: 1 }
+  ];
+
+  /* ===================== GENETIC ALGORITHM ===================== */
+  const ga = {
+    pop: [],
+    n: 12, cols: 4,
+    mut: 0.1, mutS: 0.15, cross: 0.7, elite: 1,
+    gen: 0, selected: new Set(), inspect: 0,
+    fitnessMode: "user",
+    presetName: "You pick",
+    genomeLen: 8,
+    genes: [
+      "shape (circle / square / triangle)",
+      "size",
+      "proportion (width vs height)",
+      "rotation",
+      "branching count",
+      "branch spread",
+      "hue / color",
+      "pattern (fill vs stripes)"
+    ],
+    setup() { this.randomPop(); },
+    randomize() { this.randomPop(); },
+    resize() {},
+    randomGenome() {
+      const g = new Float32Array(this.genomeLen);
+      for (let i = 0; i < g.length; i++) g[i] = rand();
+      return g;
+    },
+    randomPop() {
+      this.pop = [];
+      this.gen = 0;
+      this.selected.clear();
+      for (let i = 0; i < this.n; i++) this.pop.push({ g: this.randomGenome(), fit: 0, id: i });
+      this.scoreAll();
+    },
+    decode(g) {
+      const shapeN = Math.min(2, g[0] * 3 | 0);
+      return {
+        shape: ["circle", "square", "triangle"][shapeN],
+        size: 0.25 + g[1] * 0.7,
+        proportion: 0.45 + g[2] * 1.1,
+        rotation: g[3] * Math.PI,
+        branches: g[4] * 8 | 0,
+        spread: 0.2 + g[5] * 1.2,
+        hue: g[6] * 360,
+        stripes: g[7] > 0.5
+      };
+    },
+    drawPhenotype(g, x, y, w, h) {
+      const d = this.decode(g);
+      ctx.save();
+      ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+      ctx.fillStyle = "#141414";
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = "#444";
+      ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+      const cx = x + w / 2, cy = y + h / 2;
+      const s = Math.max(4, Math.min(w, h) * 0.2 * d.size);
+      ctx.translate(cx, cy);
+      ctx.rotate(d.rotation);
+      ctx.fillStyle = `hsl(${d.hue} 55% 58%)`;
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 1.5;
+      const drawShape = (ox, oy, sc) => {
+        const rw = Math.max(2, sc * d.proportion);
+        const rh = Math.max(2, sc / Math.max(0.4, d.proportion));
+        ctx.beginPath();
+        if (d.shape === "circle") ctx.arc(ox, oy, Math.max(rw, rh) * 0.55, 0, Math.PI * 2);
+        else if (d.shape === "square") ctx.rect(ox - rw, oy - rh, rw * 2, rh * 2);
+        else {
+          ctx.moveTo(ox, oy - rh);
+          ctx.lineTo(ox + rw, oy + rh);
+          ctx.lineTo(ox - rw, oy + rh);
+          ctx.closePath();
+        }
+        if (d.stripes) ctx.stroke(); else ctx.fill();
+      };
+      drawShape(0, 0, s);
+      for (let i = 0; i < d.branches; i++) {
+        const ang = (i / Math.max(1, d.branches)) * Math.PI * 2;
+        const rad = s * (1.1 + d.spread);
+        drawShape(Math.cos(ang) * rad, Math.sin(ang) * rad, s * 0.4);
+      }
+      ctx.restore();
+    },
+    autoFit() { return 0; },
+    scoreAll() {
+      for (const ind of this.pop) {
+        ind.fit = this.selected.has(ind.id) ? 1 : 0.04;
+      }
+    },
+    pickParent() {
+      const t = 3;
+      let best = this.pop[irand(this.pop.length)];
+      for (let i = 1; i < t; i++) {
+        const o = this.pop[irand(this.pop.length)];
+        if (o.fit > best.fit) best = o;
+      }
+      return best;
+    },
+    evolve() {
+      this.scoreAll();
+      const ranked = [...this.pop].sort((a, b) => b.fit - a.fit);
+      const next = [];
+      for (let e = 0; e < this.elite; e++) next.push({ g: ranked[e].g.slice(), fit: 0, id: e });
+      while (next.length < this.n) {
+        const A = this.pickParent(), B = this.pickParent();
+        const g = new Float32Array(this.genomeLen);
+        const cut = this.cross > rand() ? 1 + irand(this.genomeLen - 2) : this.genomeLen;
+        for (let i = 0; i < this.genomeLen; i++) {
+          g[i] = i < cut ? A.g[i] : B.g[i];
+          if (rand() < this.mut) g[i] = clamp(g[i] + (rand() - 0.5) * 2 * this.mutS, 0, 1);
+        }
+        next.push({ g, fit: 0, id: next.length });
+      }
+      this.pop = next;
+      this.selected.clear();
+      this.gen++;
+      this.scoreAll();
+    },
+    cellAt(mx, my) {
+      const cols = this.cols, rows = Math.ceil(this.n / cols);
+      const cw = W / cols, ch = H / rows;
+      const c = clamp(mx / cw | 0, 0, cols - 1);
+      const r = clamp(my / ch | 0, 0, rows - 1);
+      const i = r * cols + c;
+      return i < this.n ? i : -1;
+    },
+    click(mx, my) {
+      const i = this.cellAt(mx, my);
+      if (i < 0) return;
+      if (this.selected.has(i)) this.selected.delete(i);
+      else this.selected.add(i);
+      this.inspect = i;
+    },
+    step() {},
+    render() {
+      clearBg();
+      const cols = this.cols, rows = Math.ceil(this.n / cols);
+      const cw = W / cols, ch = H / rows;
+      for (let i = 0; i < this.n; i++) {
+        const c = i % cols, r = (i / cols) | 0;
+        const x = c * cw, y = r * ch;
+        this.drawPhenotype(this.pop[i].g, x + 4, y + 4, cw - 8, ch - 8);
+        if (this.selected.has(i)) {
+          ctx.strokeStyle = "#fff"; ctx.lineWidth = 2;
+          ctx.strokeRect(x + 3, y + 3, cw - 6, ch - 6);
+        }
+      }
+    },
+    diversity() {
+      if (this.pop.length < 2) return 0;
+      let s = 0, c = 0;
+      for (let i = 0; i < this.pop.length; i++) for (let j = i + 1; j < this.pop.length; j++) {
+        let d = 0;
+        for (let k = 0; k < 8; k++) d += Math.abs(this.pop[i].g[k] - this.pop[j].g[k]);
+        s += d; c++;
+      }
+      return s / c;
+    }
+  };
+
+  /* ===================== CELLULAR AUTOMATA ===================== */
+  const ca = {
+    mode: "life",
+    gw: 120, gh: 70, grid: null, next: null, age: null,
+    born: { 3: 1 }, surv: { 2: 1, 3: 1 },
+    wrap: true, gen: 0, density: 0.22, cellColor: "bin",
+    rule1d: 30, row: 0, speed: 5, _acc: 0, paintValue: 1,
+    presetName: "Game of Life B3/S23",
+    setup() {
+      this.gw = Math.max(60, Math.floor(W / 5));
+      this.gh = Math.max(36, Math.floor(H / 5));
+      const n = this.gw * this.gh;
+      this.grid = new Uint8Array(n);
+      this.next = new Uint8Array(n);
+      this.age = new Uint16Array(n);
+      this.mode = "life";
+      this.born = { 3: 1 }; this.surv = { 2: 1, 3: 1 };
+      this.presetName = "Game of Life B3/S23";
+      this.clear();
+      this.stamp("glider");
+      this.gen = 0; this.row = 0; this._acc = 0;
+    },
+    resize() { this.setup(); },
+    randomize(d) {
+      this.mode = "life";
+      this.density = d;
+      for (let i = 0; i < this.grid.length; i++) this.grid[i] = rand() < d ? 1 : 0;
+      this.age.fill(0); this.gen = 0;
+    },
+    randomizeWorld() {
+      const p = CA_RULES[irand(CA_RULES.length)];
+      this.setBS(p.b, p.s, p.name);
+      this.randomize(0.08 + rand() * 0.4);
+      buildParams();
+    },
+    clear() { this.grid.fill(0); this.age.fill(0); this.gen = 0; },
+    setBS(b, s, name) {
+      this.mode = "life";
+      this.born = {}; this.surv = {};
+      for (const ch of b) this.born[+ch] = 1;
+      for (const ch of s) this.surv[+ch] = 1;
+      this.presetName = name || (`B${b}/S${s}`);
+      this.randomize(this.density);
+    },
+    stamp(name) {
+      this.mode = "life";
+      const pats = {
+        glider: [[0,1,0],[0,0,1],[1,1,1]],
+        lwss: [[0,1,0,0,1],[1,0,0,0,0],[1,0,0,0,1],[1,1,1,1,0]],
+        blinker: [[1,1,1]],
+        toad: [[0,1,1,1],[1,1,1,0]],
+        beacon: [[1,1,0,0],[1,1,0,0],[0,0,1,1],[0,0,1,1]],
+        pulsar: (function () {
+          const p = [];
+          const marks = [2,3,4,8,9,10];
+          for (const x of marks) { p.push([x,0],[x,5],[x,7],[x,12]); }
+          const marks2 = [0,5,7,12];
+          for (const y of marks2) for (const x of [2,3,4,8,9,10]) p.push([y, x]);
+          return p;
+        })(),
+        rpent: [[0,1,1],[1,1,0],[0,1,0]],
+        acorn: [[0,1,0,0,0,0,0],[0,0,0,1,0,0,0],[1,1,0,0,1,1,1]],
+        gun: null
+      };
+      const ox = (this.gw >> 1) - 6, oy = (this.gh >> 1) - 6;
+      const put = (cells) => {
+        for (const c of cells) {
+          const x = ox + (Array.isArray(c) && c.length === 2 && typeof c[0] === "number" && c[0] > 1 ? c[0] : c[0]);
+          const y = oy + (c[1]);
+          if (x >= 0 && y >= 0 && x < this.gw && y < this.gh) this.grid[y * this.gw + x] = 1;
+        }
+      };
+      if (name === "glider" || name === "lwss" || name === "blinker" || name === "toad" || name === "beacon" || name === "rpent" || name === "acorn") {
+        const m = pats[name];
+        const cells = [];
+        m.forEach((row, y) => row.forEach((v, x) => { if (v) cells.push([x, y]); }));
+        put(cells);
+      } else if (name === "pulsar") put(pats.pulsar);
+      else if (name === "gun") {
+        const coords = [[0,4],[0,5],[1,4],[1,5],[10,4],[10,5],[10,6],[11,3],[11,7],[12,2],[12,8],[13,2],[13,8],[14,5],[15,3],[15,7],[16,4],[16,5],[16,6],[17,5],[20,2],[20,3],[20,4],[21,2],[21,3],[21,4],[22,1],[22,5],[24,0],[24,1],[24,5],[24,6],[34,2],[34,3],[35,2],[35,3]];
+        put(coords);
+      }
+    },
+    start1d(rule) {
+      this.mode = "eca";
+      this.rule1d = rule;
+      this.presetName = "Rule " + rule;
+      this.grid.fill(0);
+      this.age.fill(0);
+      this.grid[(0) * this.gw + (this.gw >> 1)] = 1;
+      this.row = 1; this.gen = 0;
+    },
+    ruleText() {
+      const b = Object.keys(this.born).sort().join("");
+      const s = Object.keys(this.surv).sort().join("");
+      return "B" + b + "/S" + s;
+    },
+    paint() {
+      if (!mouse.down || !mouse.inside || this.mode !== "life") return;
+      const x = mouse.x / W * this.gw | 0;
+      const y = mouse.y / H * this.gh | 0;
+      if (x >= 0 && y >= 0 && x < this.gw && y < this.gh) this.grid[y * this.gw + x] = this.paintValue;
+    },
+    neighbors(x, y) {
+      let n = 0;
+      for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) {
+        if (!i && !j) continue;
+        let xx = x + i, yy = y + j;
+        if (this.wrap) { xx = (xx + this.gw) % this.gw; yy = (yy + this.gh) % this.gh; }
+        else if (xx < 0 || yy < 0 || xx >= this.gw || yy >= this.gh) continue;
+        n += this.grid[yy * this.gw + xx];
+      }
+      return n;
+    },
+    step() {
+      this.paint();
+      const forced = this.forceStep;
+      this.forceStep = false;
+      if (!running && !forced) return;
+      if (!forced) {
+        this._acc++;
+        const interval = Math.max(1, 11 - (this.speed || 5));
+        if (this._acc % interval) return;
+      }
+      if (this.mode === "eca") {
+        if (this.row >= this.gh) {
+          this.grid.copyWithin(0, this.gw);
+          this.row = this.gh - 1;
+        }
+        const y = Math.min(this.row, this.gh - 1);
+        const py = y - 1;
+        if (py >= 0) {
+          const rule = this.rule1d;
+          for (let x = 0; x < this.gw; x++) {
+            const l = this.grid[py * this.gw + (x - 1 + this.gw) % this.gw];
+            const c = this.grid[py * this.gw + x];
+            const r = this.grid[py * this.gw + (x + 1) % this.gw];
+            const idx = (l << 2) | (c << 1) | r;
+            this.grid[y * this.gw + x] = (rule >> idx) & 1;
+          }
+        }
+        this.row++; this.gen++;
+        return;
+      }
+      const w = this.gw, h = this.gh;
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+        const i = y * w + x;
+        const n = this.neighbors(x, y);
+        const alive = this.grid[i];
+        const next = alive ? (this.surv[n] ? 1 : 0) : (this.born[n] ? 1 : 0);
+        this.next[i] = next;
+        this.age[i] = next ? this.age[i] + 1 : 0;
+      }
+      const t = this.grid; this.grid = this.next; this.next = t;
+      this.gen++;
+    },
+    live() {
+      let n = 0; for (let i = 0; i < this.grid.length; i++) n += this.grid[i];
+      return n;
+    },
+    render() {
+      const img = ctx.createImageData(this.gw, this.gh);
+      const d = img.data;
+      for (let i = 0; i < this.grid.length; i++) {
+        const a = this.grid[i];
+        let r = 20, g = 20, b = 20;
+        if (a) {
+          if (this.cellColor === "age") {
+            const t = 1 - Math.exp(-this.age[i] / 18);
+            r = 255; g = Math.floor(255 * (1 - t * 0.6)); b = Math.floor(180 * (1 - t));
+          } else { r = g = b = 240; }
+        }
+        const p = i * 4; d[p] = r; d[p + 1] = g; d[p + 2] = b; d[p + 3] = 255;
+      }
+      if (!this._tmp) this._tmp = document.createElement("canvas");
+      this._tmp.width = this.gw; this._tmp.height = this.gh;
+      this._tmp.getContext("2d").putImageData(img, 0, 0);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(this._tmp, 0, 0, W, H);
+    }
+  };
+
+  const CA_RULES = [
+    { name: "Life B3/S23", b: "3", s: "23" },
+    { name: "HighLife", b: "36", s: "23" },
+    { name: "Seeds", b: "2", s: "" },
+    { name: "Day & Night", b: "3678", s: "34678" },
+    { name: "Maze", b: "3", s: "12345" },
+    { name: "Mazectric", b: "3", s: "1234" },
+    { name: "Coral", b: "3", s: "45678" },
+    { name: "Anneal", b: "4678", s: "35678" },
+    { name: "Diamoeba", b: "35678", s: "5678" },
+    { name: "2x2", b: "36", s: "125" },
+    { name: "Life without death", b: "3", s: "012345678" },
+    { name: "Replicator", b: "1357", s: "1357" },
+    { name: "Gnarl", b: "1", s: "1" },
+    { name: "Walled cities", b: "45678", s: "2345" },
+    { name: "Stains", b: "3678", s: "235678" },
+    { name: "Move", b: "368", s: "245" },
+    { name: "34 Life", b: "34", s: "34" },
+    { name: "Amoeba", b: "357", s: "1358" },
+    { name: "Coagulations", b: "378", s: "235678" },
+    { name: "Assimilation", b: "4567", s: "345" }
+  ];
+
+  const engines = { rd, boids, lsys, ga, ca };
+
+  /* ---------- HOW IT WORKS copy ---------- */
+  const EXPLAIN = {
+    rd: `<p><b>Core idea.</b> Chemical A (resource) and chemical B (the pattern) react locally and diffuse. Drag on the canvas to inject B. Hover any slider to see what changing it does.</p>
+         <p><b>Watch.</b> F and k together pick the family (spots, worms, maze). Diffusion A vs B changes the scale. If the field goes empty, that region cannot hold a pattern.</p>`,
+    boids: `<p><b>Core idea.</b> No leader. Each boid only uses neighbors inside its perception radius: separate, align, cohere. The flock is the side-effect.</p>
+            <p><b>Watch.</b> Turn on “show perception”. Hover a boid: white circle = what it can see, orange = personal space, blue lines = neighbors. Isolate one rule to see the flock fail.</p>`,
+    lsys: `<p><b>Core idea.</b> A string rewrites in parallel, then a turtle draws it. Right panel = current string; left = drawing. Step iteration 0 → 1 → 2 to see complexity accumulate.</p>
+           <p><b>Edit.</b> Change axiom or rules and the drawing updates. F draws, +/− turn, [ ] branch.</p>`,
+    ga: `<p><b>Core idea.</b> You are the fitness function. Click forms you prefer (white frame), then Next generation. Children mix parent genomes and mutate. The last clicked genome is listed below.</p>`,
+    ca: `<p><b>Core idea.</b> Conway’s Game of Life starts at B3/S23. Click/drag to draw. The overlay shows generation and the active rule. Famous stamps: Glider, Blinker, Pulsar, Gosper gun.</p>`
+  };
+
+  function genomeText() {
+    const ind = ga.pop[ga.inspect] || ga.pop[0];
+    if (!ind) return "";
+    const d = ga.decode(ind.g);
+    const lines = ga.genes.map((name, i) => "g" + i + " " + name + ": " + ind.g[i].toFixed(2));
+    return "clicked #" + ga.inspect + "  " + d.shape + "  size " + d.size.toFixed(2) + "  rot " + (d.rotation * 180 / Math.PI | 0) + "°  branches " + d.branches + "\n" + lines.join("\n");
+  }
+
+  function readout() {
+    if (algo === "rd") {
+      return `Gray-Scott
+feed F: ${rd.F.toFixed(4)}
+kill k: ${rd.k.toFixed(4)}
+diffusion A: ${rd.Du.toFixed(3)}
+diffusion B: ${rd.Dv.toFixed(3)}
+speed: ${rd.steps} steps/frame
+mean B: ${rd.meanV().toFixed(3)}
+preset: ${rd.presetName}
+drag = add chemical B`;
+    }
+    if (algo === "boids") {
+      return `boids: ${boids.agents.length}
+separation: ${boids.ws.toFixed(2)}
+alignment: ${boids.wa.toFixed(2)}
+cohesion: ${boids.wc.toFixed(2)}
+perception: ${boids.radius}px
+max speed: ${boids.maxSpeed.toFixed(2)}
+mouse: ${boids.mouseMode}
+perception overlay: ${boids.showSense ? "on" : "off"}
+${running ? "running" : "paused"}`;
+    }
+    if (algo === "lsys") {
+      return `iteration: ${lsys.n}
+axiom: ${lsys.axiom}
+rules: ${Object.entries(lsys.rules).map(([k, v]) => k + " → " + v).join("\n")}
+angle: ${lsys.angle}°
+segment: ${lsys.segLen}
+length decay: ${lsys.lenScale}
+symbols: ${lsys.symbolCount}`;
+    }
+    if (algo === "ga") {
+      return `generation: ${ga.gen}
+population: ${ga.n}
+selected: ${[...ga.selected].join(", ") || "(none)"}
+mutation: ${ga.mut.toFixed(2)}
+crossover: ${ga.cross.toFixed(2)}
+
+GENOME
+${genomeText()}`;
+    }
+    return `generation: ${ca.gen}
+rule: ${ca.mode === "life" ? ca.ruleText() : "ECA " + ca.rule1d}
+live cells: ${ca.live()}
+speed: ${ca.speed}
+${running ? "running" : "paused"}`;
+  }
+
+  function setExplain() {
+    explainEl.innerHTML = EXPLAIN[algo];
+    stateEl.textContent = readout();
+    if (algo === "ca") hudEl.textContent = "generation " + ca.gen + "\n" + (ca.mode === "life" ? ca.ruleText() : "Rule " + ca.rule1d);
+    else if (algo === "ga") hudEl.textContent = "generation " + ga.gen;
+    else if (algo === "lsys") hudEl.textContent = "iteration " + lsys.n;
+    else hudEl.textContent = "";
+  }
+
+  function renderSimBar() {
+    const bar = document.getElementById("sim-bar");
+    bar.innerHTML = "";
+    bar.append(
+      btn(running ? "Pause" : "Play", () => { running = !running; renderSimBar(); }),
+      btn("Reset", () => { engines[algo].setup(); clearBg(); setExplain(); }),
+      btn("Randomize", () => {
+        if (algo === "ca") ca.randomizeWorld();
+        else engines[algo].randomize();
+      }),
+      btn("Step", () => {
+        engines[algo].forceStep = true;
+        const was = running; running = true;
+        engines[algo].step(); running = was;
+        engines[algo].render(); setExplain();
+      })
+    );
+  }
+
+  function buildParams() {
+    paramsEl.innerHTML = "";
+    renderSimBar();
+
+    if (algo === "rd") {
+      const g1 = group("PATTERN PRESETS");
+      g1.appendChild(presetRow(RD_PRESETS, rd.presetName, (p) => rd.applyPreset(p)));
+      paramsEl.appendChild(g1);
+      const g2 = group("SEED / DRAW");
+      const seeds = ["center", "dots", "ring", "line", "grid", "x", "noise", "frame", "spiral", "text"];
+      const row = document.createElement("div"); row.className = "row";
+      seeds.forEach((s) => row.appendChild(btn(s, () => rd.seed(s))));
+      g2.appendChild(row);
+      paramsEl.appendChild(g2);
+      const g3 = group("SLIDERS");
+      g3.appendChild(slider("feed rate F", 0.01, 0.09, 0.0005, rd.F, (v) => { rd.F = v; }, "Feed rate: how fast chemical A is replenished. With kill rate, this chooses spots vs worms vs maze vs collapse."));
+      g3.appendChild(slider("kill rate k", 0.04, 0.07, 0.0005, rd.k, (v) => { rd.k = v; }, "Kill rate: how fast chemical B is removed. Raise it and B often dies out; lower it and B can take over."));
+      g3.appendChild(slider("diffusion A", 0.04, 0.28, 0.005, rd.Du, (v) => { rd.Du = v; }, "How fast chemical A spreads. Usually A should diffuse faster than B or patterns fail to form."));
+      g3.appendChild(slider("diffusion B", 0.02, 0.16, 0.005, rd.Dv, (v) => { rd.Dv = v; }, "How fast chemical B spreads. Higher B diffusion makes larger, blurrier features."));
+      g3.appendChild(slider("simulation speed", 1, 16, 1, rd.steps, (v) => { rd.steps = v; }, "Updates per animation frame. Slow enough to watch a spot split; fast enough to see a texture."));
+      g3.appendChild(slider("paint radius", 1, 16, 1, rd.brush, (v) => { rd.brush = v; }, "Brush size for injecting chemical B by dragging on the simulation."));
+      paramsEl.appendChild(g3);
+      const g4 = group("PALETTE");
+      const pals = ["magma", "ink", "ocean", "copper", "neon", "forest", "sunset"];
+      const pr = document.createElement("div"); pr.className = "row";
+      pals.forEach((p) => pr.appendChild(btn(p, () => { rd.palette = p; })));
+      g4.appendChild(pr);
+      paramsEl.appendChild(g4);
+    }
+
+    if (algo === "boids") {
+      const g1 = group("BEHAVIOR PRESETS");
+      g1.appendChild(presetRow(BOID_PRESETS, boids.presetName, (p) => {
+        boids.ws = p.ws; boids.wa = p.wa; boids.wc = p.wc;
+        boids.radius = p.radius; boids.noise = p.noise;
+        boids.sepR = p.sepR ?? 22;
+        boids.fov = p.fov ?? 360;
+        boids.maxSpeed = p.maxSpeed ?? 2.6;
+        boids.maxForce = p.maxForce ?? 0.08;
+        boids.trail = p.trail ?? 0.18;
+        boids.presetName = p.name;
+        buildParams();
+      }));
+      paramsEl.appendChild(g1);
+      const g2 = group("RULE ISOLATION");
+      const row = document.createElement("div"); row.className = "row";
+      row.append(
+        btn("Separation only", () => { boids.ws = 2; boids.wa = 0; boids.wc = 0; boids.presetName = "Sep"; }),
+        btn("Alignment only", () => { boids.ws = 0; boids.wa = 2; boids.wc = 0; boids.presetName = "Align"; }),
+        btn("Cohesion only", () => { boids.ws = 0; boids.wa = 0; boids.wc = 2; boids.presetName = "Coh"; }),
+        btn("All three", () => { boids.ws = 1.6; boids.wa = 1.1; boids.wc = 1; boids.presetName = "Flock"; })
+      );
+      g2.appendChild(row);
+      paramsEl.appendChild(g2);
+      const g3 = group("MOUSE + SEEING");
+      const r2 = document.createElement("div"); r2.className = "row";
+      r2.append(
+        btn("Attract", () => { boids.mouseMode = "attract"; }),
+        btn("Repel", () => { boids.mouseMode = "repel"; }),
+        btn("Mouse off", () => { boids.mouseMode = "off"; }),
+        btn(boids.showSense ? "Hide perception" : "Show perception", () => { boids.showSense = !boids.showSense; buildParams(); })
+      );
+      g3.appendChild(r2);
+      paramsEl.appendChild(g3);
+      const g4 = group("SLIDERS");
+      g4.appendChild(slider("separation", 0, 4, 0.05, boids.ws, (v) => boids.ws = v, "Steer away from neighbors that are too close. Alone, the group explodes."));
+      g4.appendChild(slider("alignment", 0, 4, 0.05, boids.wa, (v) => boids.wa = v, "Match the average heading of neighbors. Alone, they share direction but may not stay together."));
+      g4.appendChild(slider("cohesion", 0, 4, 0.05, boids.wc, (v) => boids.wc = v, "Steer toward the average position of neighbors. Alone, they collapse into a knot."));
+      g4.appendChild(slider("perception radius", 20, 160, 1, boids.radius, (v) => boids.radius = v, "How far a boid can see. This is the white circle in overlay mode."));
+      g4.appendChild(slider("maximum speed", 0.4, 5, 0.1, boids.maxSpeed, (v) => boids.maxSpeed = v, "Top speed. Fast flocks need stronger steering or they overshoot."));
+      g4.appendChild(slider("number of boids", 10, 220, 1, boids.n, (v) => { boids.respawn(v | 0); }, "Population size. Sparse: individuals are readable. Dense: a cloud."));
+      paramsEl.appendChild(g4);
+    }
+
+    if (algo === "lsys") {
+      const g1 = group("PRESETS");
+      g1.appendChild(presetRow(L_PRESETS, lsys.presetName, (p) => lsys.apply(p)));
+      paramsEl.appendChild(g1);
+      const gA = group("GRAMMAR");
+      const ax = document.createElement("label");
+      ax.textContent = "Axiom";
+      ax.dataset.tip = "Starting string (generation 0). Everything grows from this seed.";
+      const axi = document.createElement("input");
+      axi.type = "text"; axi.value = lsys.axiom;
+      axi.addEventListener("input", () => { lsys.axiom = axi.value || "F"; lsys.rebuild(); });
+      gA.append(ax, axi);
+      const rl = document.createElement("label");
+      rl.textContent = "Production rules (one per line: X = replacement)";
+      rl.dataset.tip = "Each symbol on the left is replaced in parallel every iteration.";
+      const rta = document.createElement("textarea");
+      rta.rows = 4;
+      rta.value = Object.entries(lsys.rules).map(([k, v]) => k + " = " + v).join("\n");
+      rta.addEventListener("input", () => {
+        const rules = {};
+        rta.value.split("\n").forEach((line) => {
+          const m = line.match(/^\s*(.)\s*[=→>]\s*(.*)$/);
+          if (m) rules[m[1]] = m[2];
+        });
+        if (Object.keys(rules).length) { lsys.rules = rules; lsys.rebuild(); }
+      });
+      gA.append(rl, rta);
+      paramsEl.appendChild(gA);
+      const gIt = group("STEP THROUGH REWRITING");
+      const ir = document.createElement("div"); ir.className = "row";
+      ir.append(
+        btn("Iteration 0", () => { lsys.n = 0; lsys.rebuild(); buildParams(); }),
+        btn("− iteration", () => { lsys.n = Math.max(0, lsys.n - 1); lsys.rebuild(); buildParams(); }),
+        btn("+ iteration", () => { lsys.n = Math.min(8, lsys.n + 1); lsys.rebuild(); buildParams(); })
+      );
+      gIt.appendChild(ir);
+      paramsEl.appendChild(gIt);
+      const g2 = group("DRAWING");
+      g2.appendChild(slider("iterations", 0, 8, 1, lsys.n, (v) => { lsys.n = v; lsys.rebuild(); }, "How many rewrite steps. 0 is only the axiom."));
+      g2.appendChild(slider("branch angle", 5, 140, 1, lsys.angle, (v) => { lsys.angle = v; lsys.rebuild(); }, "Turtle turn for + and −."));
+      g2.appendChild(slider("segment length", 4, 28, 1, lsys.segLen, (v) => { lsys.segLen = v; lsys.rebuild(); }, "Step length before the drawing is fitted to the canvas."));
+      g2.appendChild(slider("length decay", 0.5, 1, 0.02, lsys.lenScale, (v) => { lsys.lenScale = v; lsys.rebuild(); }, "Each nested branch multiplies length by this. Lower = shorter twigs."));
+      paramsEl.appendChild(g2);
+    }
+
+    if (algo === "ga") {
+      const g1 = group("ARTIFICIAL SELECTION");
+      const row = document.createElement("div"); row.className = "row";
+      [
+        ["Next generation", () => ga.evolve()],
+        ["Reset population", () => ga.randomPop()]
+      ].forEach(([n, fn]) => row.appendChild(btn(n, fn)));
+      g1.appendChild(row);
+      paramsEl.appendChild(g1);
+      const g3 = group("VARIATION");
+      g3.appendChild(slider("mutation rate", 0, 0.4, 0.01, ga.mut, (v) => ga.mut = v, "Chance each gene mutates. High: children stop looking like the parents you picked."));
+      g3.appendChild(slider("crossover", 0, 1, 0.05, ga.cross, (v) => ga.cross = v, "Chance two selected parents mix genomes. Otherwise a parent is copied, then maybe mutated."));
+      paramsEl.appendChild(g3);
+    }
+
+    if (algo === "ca") {
+      const g1 = group("LIFE-LIKE RULES");
+      g1.appendChild(presetRow(CA_RULES, ca.presetName, (p) => ca.setBS(p.b, p.s, p.name)));
+      paramsEl.appendChild(g1);
+      const g2 = group("1D ELEMENTARY (time stacked)");
+      const row = document.createElement("div"); row.className = "row";
+      [30, 54, 60, 90, 105, 110, 122, 126, 150, 182, 184, 193, 225].forEach((n) => {
+        row.appendChild(btn("Rule " + n, () => ca.start1d(n)));
+      });
+      g2.appendChild(row);
+      paramsEl.appendChild(g2);
+      const g3 = group("FAMOUS PATTERNS");
+      const r2 = document.createElement("div"); r2.className = "row";
+      [["Clear grid", () => { ca.clear(); ca.gen = 0; }],
+       ["Randomize grid", () => ca.randomize(ca.density)],
+       ["Glider", () => { ca.clear(); ca.stamp("glider"); ca.gen = 0; }],
+       ["Blinker", () => { ca.clear(); ca.stamp("blinker"); ca.gen = 0; }],
+       ["Pulsar", () => { ca.clear(); ca.stamp("pulsar"); ca.gen = 0; }],
+       ["Gosper Glider Gun", () => { ca.clear(); ca.stamp("gun"); ca.gen = 0; }]]
+        .forEach(([n, fn]) => r2.appendChild(btn(n, fn)));
+      g3.appendChild(r2);
+      paramsEl.appendChild(g3);
+      const gBS = group("BIRTH / SURVIVE (click digits)");
+      const mk = (kind) => {
+        const row = document.createElement("div"); row.className = "row";
+        row.appendChild(Object.assign(document.createElement("span"), { textContent: kind === "born" ? "B " : "S ", style: "align-self:center" }));
+        for (let n = 0; n <= 8; n++) {
+          const on = !!(kind === "born" ? ca.born[n] : ca.surv[n]);
+          const b = btn(String(n), () => {
+            const map = kind === "born" ? ca.born : ca.surv;
+            if (map[n]) delete map[n]; else map[n] = 1;
+            ca.mode = "life";
+            ca.presetName = ca.ruleText();
+            buildParams();
+          }, on ? "preset active" : "preset");
+          row.appendChild(b);
+        }
+        return row;
+      };
+      gBS.appendChild(mk("born"));
+      gBS.appendChild(mk("surv"));
+      paramsEl.appendChild(gBS);
+      const g4 = group("WORLD");
+      g4.appendChild(slider("simulation speed", 1, 10, 1, ca.speed, (v) => { ca.speed = v; }, "Higher = more generations per second."));
+      g4.appendChild(slider("random density", 0.02, 0.6, 0.01, ca.density, (v) => { ca.density = v; }, "Used when you randomize the grid."));
+      const r3 = document.createElement("div"); r3.className = "row";
+      r3.append(
+        btn("Wrap", () => { ca.wrap = true; }),
+        btn("Dead edge", () => { ca.wrap = false; })
+      );
+      g4.appendChild(r3);
+      paramsEl.appendChild(g4);
+    }
+    setExplain();
+  }
+
+  function switchAlgo(id) {
+    algo = id;
+    running = true;
+    document.body.classList.toggle("mode-lsys", id === "lsys");
+    [...navEl.querySelectorAll("button")].forEach((b) => b.classList.toggle("active", b.dataset.id === id));
+    engines[id].setup();
+    clearBg();
+    buildParams();
+    resize();
+    setExplain();
+  }
+
+  ALGOS.forEach((a) => {
+    const b = document.createElement("button");
+    b.textContent = a.name;
+    b.dataset.id = a.id;
+    if (a.id === algo) b.classList.add("active");
+    b.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      const id = a.id;
+      requestAnimationFrame(() => switchAlgo(id));
+    });
+    navEl.appendChild(b);
+  });
+
+  canvas.addEventListener("pointerdown", (e) => {
+    const r = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
+    mouse.down = true; mouse.inside = true;
+    if (algo === "ga") ga.click(mouse.x, mouse.y);
+    if (algo === "ca" && ca.mode === "life" && ca.grid) {
+      const x = mouse.x / W * ca.gw | 0;
+      const y = mouse.y / H * ca.gh | 0;
+      if (x >= 0 && y >= 0 && x < ca.gw && y < ca.gh) {
+        const i = y * ca.gw + x;
+        ca.paintValue = ca.grid[i] ? 0 : 1;
+        ca.grid[i] = ca.paintValue;
+      }
+    }
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener("pointermove", (e) => {
+    const r = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
+    mouse.inside = true;
+  });
+  canvas.addEventListener("pointerup", () => { mouse.down = false; });
+  canvas.addEventListener("pointerleave", () => { mouse.inside = false; mouse.down = false; });
+
+  window.addEventListener("resize", resize);
+
+  document.addEventListener("mousemove", (e) => {
+    const t = e.target.closest("[data-tip]");
+    if (t && t.dataset.tip) {
+      tipEl.style.display = "block";
+      tipEl.textContent = t.dataset.tip;
+      tipEl.style.left = Math.min(e.clientX + 14, window.innerWidth - 280) + "px";
+      tipEl.style.top = (e.clientY + 14) + "px";
+    } else {
+      tipEl.style.display = "none";
+    }
+  });
+
+  function tick(t) {
+    engines[algo].step();
+    engines[algo].render();
+    if (t - lastStateWrite > 200) {
+      stateEl.textContent = readout();
+      if (algo === "ca") hudEl.textContent = "generation " + ca.gen + "\n" + (ca.mode === "life" ? ca.ruleText() : "Rule " + ca.rule1d);
+      lastStateWrite = t;
+    }
+    requestAnimationFrame(tick);
+  }
+
+  resize();
+  engines[algo].setup();
+  buildParams();
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
