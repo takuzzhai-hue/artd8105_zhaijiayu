@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eye of the Beholder — Exposure System</title>
+  <style>
+    :root {
+      --panel: 320px;
+      --bg: #0c0c0c;
+      --panel-bg: #141414;
+      --line: #2a2a2a;
+      --ink: #d8d4cc;
+      --muted: #8a8680;
+      --accent: #c8c2b4;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font: 12px/1.4 "IBM Plex Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    }
+    body {
+      display: flex;
+      overflow: hidden;
+    }
+    #panel {
+      width: var(--panel);
+      flex-shrink: 0;
+      height: 100%;
+      overflow: auto;
+      background: var(--panel-bg);
+      border-right: 1px solid var(--line);
+      padding: 16px 16px 28px;
+    }
+    h1 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin: 0 0 4px;
+      line-height: 1.3;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 10px;
+      margin: 0 0 16px;
+      line-height: 1.45;
+    }
+    label {
+      display: block;
+      margin: 12px 0 0;
+      font-size: 11px;
+    }
+    label .val {
+      float: right;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    input[type="range"],
+    input[type="text"],
+    select {
+      width: 100%;
+      margin-top: 4px;
+    }
+    input[type="text"],
+    select,
+    button {
+      font: inherit;
+      color: var(--ink);
+      background: #1c1c1c;
+      border: 1px solid #333;
+      border-radius: 2px;
+    }
+    input[type="text"] { padding: 6px 8px; }
+    select { padding: 5px 6px; }
+    input[type="range"] { accent-color: var(--accent); }
+    input[type="file"] {
+      width: 100%;
+      margin-top: 6px;
+      font: inherit;
+      color: var(--muted);
+    }
+    input[type="color"] {
+      width: 100%;
+      height: 28px;
+      padding: 0;
+      border: 1px solid #333;
+      background: #1c1c1c;
+      cursor: pointer;
+    }
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .presets {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    button {
+      padding: 6px 7px;
+      cursor: pointer;
+      text-align: left;
+      min-height: 36px;
+    }
+    button:hover { border-color: #555; background: #222; }
+    button.primary {
+      width: 100%;
+      margin-top: 12px;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+    .mode-extra { display: none; }
+    .mode-extra.on { display: block; }
+    #curve {
+      display: block;
+      width: 100%;
+      height: 72px;
+      margin-top: 6px;
+      background: #0a0a0a;
+      border: 1px solid var(--line);
+    }
+    .curve-cap {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 9px;
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 16px 0;
+    }
+    #stage {
+      flex: 1;
+      min-width: 0;
+      height: 100%;
+      position: relative;
+      background: #000;
+    }
+    #art {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    #preview {
+      display: block;
+      width: 100%;
+      height: 144px;
+      margin-top: 8px;
+      background: #0a0a0a;
+      border: 1px solid var(--line);
+    }
+    #fileNote { margin: 8px 0 0; }
+  </style>
+</head>
+<body>
+  <aside id="panel">
+    <h1>Eye of the Beholder<br>Exposure System</h1>
+    <p class="sub">Schroeder &amp; Hanauer, 1968 — SC 4020 simulated exposure. Tone is not gray: it is how many times a character is flashed.</p>
+
+    <label>Image
+      <input id="file" type="file" accept="image/*">
+    </label>
+    <p class="sub" id="fileNote">原作裁的是眼睛局部。请把瞳孔放进下面的方框里；室内照片请打开对比度拉伸。</p>
+    <canvas id="preview" width="288" height="144"></canvas>
+
+    <label>Zoom <span class="val" id="zoomOut"></span>
+      <input id="zoom" type="range" min="1" max="8" step="0.05" value="1">
+    </label>
+    <label>Pan X <span class="val" id="panXOut"></span>
+      <input id="panX" type="range" min="-1" max="1" step="0.01" value="0">
+    </label>
+    <label>Pan Y <span class="val" id="panYOut"></span>
+      <input id="panY" type="range" min="-1" max="1" step="0.01" value="0">
+    </label>
+    <label>Contrast stretch <span class="val" id="stretchOut"></span>
+      <input id="stretch" type="range" min="0" max="1" step="0.01" value="1">
+    </label>
+
+    <label>Grid size N <span class="val" id="nOut"></span>
+      <input id="n" type="range" min="32" max="200" step="1" value="128">
+    </label>
+
+    <label>Text string
+      <input id="text" type="text" spellcheck="false" value="ONE PICTURE IS WORTH A THOUSAND WORDS ">
+    </label>
+
+    <label>Cell size <span class="val" id="cellOut"></span>
+      <input id="cell" type="range" min="4" max="24" step="1" value="8">
+    </label>
+
+    <hr>
+
+    <label>Exposure mode
+      <select id="mode">
+        <option value="linear">linear (original)</option>
+        <option value="gamma">gamma</option>
+        <option value="threshold">threshold</option>
+        <option value="invert">invert</option>
+        <option value="posterize">posterize</option>
+        <option value="error">error (nonsense calculations)</option>
+      </select>
+    </label>
+
+    <div id="extra-gamma" class="mode-extra">
+      <label>gamma <span class="val" id="gammaOut"></span>
+        <input id="gamma" type="range" min="0.2" max="4" step="0.05" value="2.2">
+      </label>
+    </div>
+    <div id="extra-threshold" class="mode-extra">
+      <label>threshold <span class="val" id="threshOut"></span>
+        <input id="thresh" type="range" min="0" max="1" step="0.01" value="0.45">
+      </label>
+    </div>
+    <div id="extra-posterize" class="mode-extra">
+      <label>levels <span class="val" id="levelsOut"></span>
+        <input id="levels" type="range" min="2" max="8" step="1" value="4">
+      </label>
+    </div>
+    <div id="extra-error" class="mode-extra">
+      <label>bigN <span class="val" id="bigNOut"></span>
+        <input id="bigN" type="range" min="16" max="1023" step="1" value="255">
+      </label>
+      <label>primeMultiplier <span class="val" id="primeOut"></span>
+        <input id="prime" type="range" min="2" max="97" step="1" value="31">
+      </label>
+      <label>jitter <span class="val" id="jitterOut"></span>
+        <input id="jitter" type="range" min="0" max="20" step="1" value="0">
+      </label>
+    </div>
+
+    <label>maxExposures <span class="val" id="maxKOut"></span>
+      <input id="maxK" type="range" min="1" max="60" step="1" value="40">
+    </label>
+
+    <label>globalAlpha per stroke <span class="val" id="alphaOut"></span>
+      <input id="alpha" type="range" min="0.02" max="0.4" step="0.01" value="0.12">
+    </label>
+
+    <div class="row-2">
+      <label>Ink
+        <input id="ink" type="color" value="#e8e4d8">
+      </label>
+      <label>Background
+        <input id="bg" type="color" value="#000000">
+      </label>
+    </div>
+
+    <label style="margin-top:16px">Mapping curve L → k
+      <canvas id="curve" width="288" height="72"></canvas>
+    </label>
+    <div class="curve-cap"><span>L = 0</span><span>L = 1</span></div>
+
+    <hr>
+    <div>Presets</div>
+    <div class="presets">
+      <button type="button" data-preset="original">Original (linear)</button>
+      <button type="button" data-preset="gamma">High-contrast gamma</button>
+      <button type="button" data-preset="threshold">Threshold</button>
+      <button type="button" data-preset="negative">Negative</button>
+      <button type="button" data-preset="error">Programming Error</button>
+    </div>
+
+    <button type="button" class="primary" id="exportBtn">Export PNG</button>
+  </aside>
+
+  <div id="stage">
+    <canvas id="art"></canvas>
+  </div>
+
+  <script>
+    // ─── Eye of the Beholder — Exposure System ─────────────────────────────
+    // Recreates the 1968 Schroeder / Hanauer pipeline:
+    //   sample a photo on an N×N grid → drop looping text into each cell →
+    //   fake grayscale by flashing each glyph 1..k times (SC 4020 had none).
+    // ──────────────────────────────────────────────────────────────────────
+
+    const $ = (id) => document.getElementById(id);
+
+    const ui = {
+      file: $("file"),
+      zoom: $("zoom"),
+      panX: $("panX"),
+      panY: $("panY"),
+      stretch: $("stretch"),
+      n: $("n"),
+      text: $("text"),
+      cell: $("cell"),
+      mode: $("mode"),
+      gamma: $("gamma"),
+      thresh: $("thresh"),
+      levels: $("levels"),
+      bigN: $("bigN"),
+      prime: $("prime"),
+      jitter: $("jitter"),
+      maxK: $("maxK"),
+      alpha: $("alpha"),
+      ink: $("ink"),
+      bg: $("bg"),
+      nOut: $("nOut"),
+      zoomOut: $("zoomOut"),
+      panXOut: $("panXOut"),
+      panYOut: $("panYOut"),
+      stretchOut: $("stretchOut"),
+      cellOut: $("cellOut"),
+      gammaOut: $("gammaOut"),
+      threshOut: $("threshOut"),
+      levelsOut: $("levelsOut"),
+      bigNOut: $("bigNOut"),
+      primeOut: $("primeOut"),
+      jitterOut: $("jitterOut"),
+      maxKOut: $("maxKOut"),
+      alphaOut: $("alphaOut"),
+    };
+
+    const art = $("art");
+    const artCtx = art.getContext("2d", { alpha: false });
+    const curve = $("curve");
+    const curveCtx = curve.getContext("2d");
+    const preview = $("preview");
+    const previewCtx = preview.getContext("2d", { alpha: false });
+
+    // Offscreen: source photograph (for getImageData).
+    const srcCanvas = document.createElement("canvas");
+    const srcCtx = srcCanvas.getContext("2d", { willReadFrequently: true });
+
+    // Offscreen: the exposure plot itself, N * cellSize square.
+    const plot = document.createElement("canvas");
+    const plotCtx = plot.getContext("2d", { alpha: false });
+
+    let sourceImage = null;
+    let sourceData = null; // ImageData of the photograph
+    let rendering = false;
+    let plotDirty = false;
+    let heavyTimer = 0;
+
+    const DEFAULT_TEXT = "ONE PICTURE IS WORTH A THOUSAND WORDS ";
+
+    function clamp(v, lo, hi) {
+      return Math.max(lo, Math.min(hi, v));
+    }
+
+    function readState() {
+      const text = ui.text.value.length ? ui.text.value : DEFAULT_TEXT;
+      return {
+        zoom: parseFloat(ui.zoom.value),
+        panX: parseFloat(ui.panX.value),
+        panY: parseFloat(ui.panY.value),
+        stretch: parseFloat(ui.stretch.value),
+        n: parseInt(ui.n.value, 10),
+        text,
+        cell: parseInt(ui.cell.value, 10),
+        mode: ui.mode.value,
+        gamma: parseFloat(ui.gamma.value),
+        thresh: parseFloat(ui.thresh.value),
+        levels: parseInt(ui.levels.value, 10),
+        bigN: parseInt(ui.bigN.value, 10),
+        prime: parseInt(ui.prime.value, 10),
+        jitter: parseInt(ui.jitter.value, 10),
+        maxK: parseInt(ui.maxK.value, 10),
+        alpha: parseFloat(ui.alpha.value),
+        ink: ui.ink.value,
+        bg: ui.bg.value,
+      };
+    }
+
+    function updateReadouts(s) {
+      ui.nOut.textContent = s.n;
+      ui.zoomOut.textContent = s.zoom.toFixed(2) + "×";
+      ui.panXOut.textContent = s.panX.toFixed(2);
+      ui.panYOut.textContent = s.panY.toFixed(2);
+      ui.stretchOut.textContent = s.stretch.toFixed(2);
+      ui.cellOut.textContent = s.cell + "px";
+      ui.gammaOut.textContent = s.gamma.toFixed(2);
+      ui.threshOut.textContent = s.thresh.toFixed(2);
+      ui.levelsOut.textContent = s.levels;
+      ui.bigNOut.textContent = s.bigN;
+      ui.primeOut.textContent = s.prime;
+      ui.jitterOut.textContent = s.jitter;
+      ui.maxKOut.textContent = s.maxK;
+      ui.alphaOut.textContent = s.alpha.toFixed(2);
+    }
+
+    function syncModeExtras() {
+      const mode = ui.mode.value;
+      $("extra-gamma").classList.toggle("on", mode === "gamma");
+      $("extra-threshold").classList.toggle("on", mode === "threshold");
+      $("extra-posterize").classList.toggle("on", mode === "posterize");
+      $("extra-error").classList.toggle("on", mode === "error");
+    }
+
+    /**
+     * exposure(L) → k
+     *
+     * The SC 4020 microfilm plotter could not draw gray. Schroeder/Hanauer
+     * mapped photographic luminance to a flash count: the same character is
+     * drawn k times on top of itself. More flashes → more deposited light
+     * on the film → a darker (or, on a black CRT photographed, brighter)
+     * cell. k is always an integer in 1..maxExposures.
+     *
+     * L is average cell luminance in [0, 1], Rec. 601:
+     *   L = 0.299 R + 0.587 G + 0.114 B
+     *
+     * Modes other than "linear" are the design-system layer: they keep the
+     * medium (repeated exposure) and change only the mapping function.
+     *
+     * cellIndex is used solely by "error" for stable per-cell jitter.
+     */
+    function exposure(L, s, cellIndex) {
+      const maxK = s.maxK;
+      L = clamp(L, 0, 1);
+      let k;
+
+      switch (s.mode) {
+        case "linear":
+          // Original 1968 mapping: dark photo → many flashes.
+          k = Math.round((1 - L) * (maxK - 1)) + 1;
+          break;
+
+        case "gamma":
+          // Nonlinear tone curve. gamma > 1 holds midtones back;
+          // gamma < 1 pushes them toward max exposure.
+          k = Math.round(Math.pow(1 - L, s.gamma) * maxK);
+          break;
+
+        case "threshold":
+          // Binary film: below threshold, full stack; above, a single flash.
+          k = L < s.thresh ? maxK : 1;
+          break;
+
+        case "invert":
+          // Same linear ramp, but light source cells get the long exposure.
+          k = Math.round(L * (maxK - 1)) + 1;
+          break;
+
+        case "posterize": {
+          // Quantize (1 − L) into `levels` steps, then scale to k.
+          const t = 1 - L;
+          const q = s.levels <= 1
+            ? t
+            : Math.round(t * (s.levels - 1)) / (s.levels - 1);
+          k = Math.round(q * (maxK - 1)) + 1;
+          break;
+        }
+
+        case "error": {
+          // Homage to Schroeder's remark that "nonsense calculations can be
+          // beautiful": integer wrap of a scaled luminance, times a prime,
+          // modulo the exposure budget — banding, moiré, glitch.
+          const wrapped = (Math.round((1 - L) * s.bigN) * s.prime) % maxK;
+          k = wrapped + 1;
+          if (s.jitter > 0) {
+            // Deterministic jitter so live re-renders do not flicker.
+            const u = hash01(cellIndex + 1);
+            k += Math.round((u - 0.5) * 2 * s.jitter);
+          }
+          break;
+        }
+
+        default:
+          k = Math.round((1 - L) * (maxK - 1)) + 1;
+      }
+
+      return clamp(Math.round(k), 1, maxK);
+    }
+
+    function hash01(i) {
+      const x = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+      return x - Math.floor(x);
+    }
+
+    function makePlaceholder() {
+      const c = document.createElement("canvas");
+      c.width = 512;
+      c.height = 512;
+      const g = c.getContext("2d");
+      const lg = g.createLinearGradient(0, 0, 512, 512);
+      lg.addColorStop(0, "#f2efe8");
+      lg.addColorStop(0.45, "#9a9084");
+      lg.addColorStop(1, "#1c1a18");
+      g.fillStyle = lg;
+      g.fillRect(0, 0, 512, 512);
+      const rg = g.createRadialGradient(300, 220, 10, 280, 240, 260);
+      rg.addColorStop(0, "#111");
+      rg.addColorStop(0.22, "#5a4a3c");
+      rg.addColorStop(0.55, "rgba(180,160,140,0.35)");
+      rg.addColorStop(1, "rgba(0,0,0,0)");
+      g.fillStyle = rg;
+      g.fillRect(0, 0, 512, 512);
+      const img = new Image();
+      img.src = c.toDataURL("image/png");
+      return img;
+    }
+
+    function imageSize(img) {
+      return {
+        w: img.naturalWidth || img.width,
+        h: img.naturalHeight || img.height,
+      };
+    }
+
+    /** Square cover-crop of the photograph (original was a tight eye region). */
+    function cropRect(img, s) {
+      const { w, h } = imageSize(img);
+      const zoom = Math.max(1, s.zoom);
+      const side = Math.min(w, h) / zoom;
+      const maxX = Math.max(0, w - side);
+      const maxY = Math.max(0, h - side);
+      const sx = clamp((w - side) / 2 + s.panX * 0.5 * maxX, 0, maxX);
+      const sy = clamp((h - side) / 2 + s.panY * 0.5 * maxY, 0, maxY);
+      return { sx, sy, side, w, h };
+    }
+
+    function rebuildSample(s) {
+      if (!sourceImage) return;
+      const SAMPLE = 640;
+      const { sx, sy, side } = cropRect(sourceImage, s);
+      srcCanvas.width = SAMPLE;
+      srcCanvas.height = SAMPLE;
+      srcCtx.imageSmoothingEnabled = true;
+      srcCtx.drawImage(sourceImage, sx, sy, side, side, 0, 0, SAMPLE, SAMPLE);
+      sourceData = srcCtx.getImageData(0, 0, SAMPLE, SAMPLE);
+    }
+
+    /**
+     * Phone photos of an eye often occupy a narrow band of gray.
+     * Stretching L to the full 0–1 range (using 2nd–98th percentiles)
+     * is what lets the exposure mapping actually separate pupil from skin.
+     * amount = 0 is the raw photograph (historically literal).
+     */
+    function stretchLuminance(lum, amount) {
+      if (amount <= 0) return lum;
+      const copy = Array.from(lum);
+      copy.sort((a, b) => a - b);
+      const lo = copy[Math.floor(copy.length * 0.02)];
+      const hi = copy[Math.min(copy.length - 1, Math.floor(copy.length * 0.98))];
+      const span = Math.max(1e-4, hi - lo);
+      const out = new Float32Array(lum.length);
+      for (let i = 0; i < lum.length; i++) {
+        const stretched = clamp((lum[i] - lo) / span, 0, 1);
+        out[i] = lum[i] + (stretched - lum[i]) * amount;
+      }
+      return out;
+    }
+
+    function drawPreview(s, lum) {
+      const ctx = previewCtx;
+      const w = preview.width;
+      const h = preview.height;
+      ctx.fillStyle = "#0a0a0a";
+      ctx.fillRect(0, 0, w, h);
+      const pad = 6;
+      const box = Math.floor((h - pad * 2));
+      if (sourceImage) {
+        const { sx, sy, side } = cropRect(sourceImage, s);
+        ctx.drawImage(sourceImage, sx, sy, side, side, pad, pad, box, box);
+      }
+      if (lum && lum.length) {
+        const n = s.n;
+        const x0 = pad + box + pad;
+        const tmp = document.createElement("canvas");
+        tmp.width = n;
+        tmp.height = n;
+        const t = tmp.getContext("2d");
+        const img = t.createImageData(n, n);
+        for (let i = 0; i < n * n; i++) {
+          const v = Math.round(lum[i] * 255);
+          img.data[i * 4] = v;
+          img.data[i * 4 + 1] = v;
+          img.data[i * 4 + 2] = v;
+          img.data[i * 4 + 3] = 255;
+        }
+        t.putImageData(img, 0, 0);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(tmp, x0, pad, box, box);
+      }
+      ctx.fillStyle = "#8a8680";
+      ctx.font = "9px ui-monospace, Menlo, monospace";
+      ctx.fillText("crop", pad, h - 2);
+      ctx.fillText("sampled L", pad + box + pad, h - 2);
+    }
+
+    function ingestImage(img) {
+      sourceImage = img;
+      scheduleRender(true);
+    }
+
+    /**
+     * Average Rec. 601 luminance of the photograph over the N×N cell grid.
+     * Returns a Float32Array of length N*N, row-major, values in [0, 1].
+     */
+    function sampleGrid(n) {
+      const lum = new Float32Array(n * n);
+      if (!sourceData) return lum;
+      const { width: w, height: h, data } = sourceData;
+      const cellW = w / n;
+      const cellH = h / n;
+
+      for (let gy = 0; gy < n; gy++) {
+        const y0 = Math.floor(gy * cellH);
+        const y1 = Math.floor((gy + 1) * cellH);
+        for (let gx = 0; gx < n; gx++) {
+          const x0 = Math.floor(gx * cellW);
+          const x1 = Math.floor((gx + 1) * cellW);
+          let sum = 0;
+          let count = 0;
+          for (let y = y0; y < y1; y++) {
+            let i = (y * w + x0) * 4;
+            for (let x = x0; x < x1; x++) {
+              const r = data[i];
+              const g = data[i + 1];
+              const b = data[i + 2];
+              sum += 0.299 * r + 0.587 * g + 0.114 * b;
+              count++;
+              i += 4;
+            }
+          }
+          lum[gy * n + gx] = count ? (sum / count) / 255 : 0;
+        }
+      }
+      return lum;
+    }
+
+    /**
+     * Exposure-buildup render.
+     * For each cell: take the next character of the looping string (spaces
+     * included), look up k = exposure(L), then draw that glyph k times at
+     * the same position with a low constant globalAlpha. The stack is the
+     * gray. Do not pre-multiply into a single alpha — that would skip the
+     * medium this work is about.
+     */
+    function renderPlot(s, lum) {
+      const n = s.n;
+      const cell = s.cell;
+      const size = n * cell;
+      plot.width = size;
+      plot.height = size;
+
+      const ctx = plotCtx;
+      ctx.imageSmoothingEnabled = false;
+      ctx.fillStyle = s.bg;
+      ctx.fillRect(0, 0, size, size);
+
+      ctx.font = Math.max(4, Math.floor(cell * 0.92)) + 'px "Courier New", Courier, monospace';
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = s.ink;
+      ctx.globalAlpha = s.alpha;
+
+      const str = s.text;
+      const len = str.length;
+      const cxOff = cell * 0.5;
+      const cyOff = cell * 0.5 + 0.5; // slight optical centering in the cell
+
+      let charIndex = 0;
+      for (let gy = 0; gy < n; gy++) {
+        const cy = gy * cell + cyOff;
+        for (let gx = 0; gx < n; gx++) {
+          const i = gy * n + gx;
+          const ch = str.charAt(charIndex % len);
+          charIndex++;
+          if (ch === " ") continue; // a space still "occupies" the cell, but deposits no ink — original highlight trick
+
+          const k = exposure(lum[i], s, i);
+          const cx = gx * cell + cxOff;
+          // k superimposed flashes of the same glyph
+          for (let flash = 0; flash < k; flash++) {
+            ctx.fillText(ch, cx, cy);
+          }
+        }
+      }
+
+      ctx.globalAlpha = 1;
+    }
+
+    function blitToStage(s) {
+      const stage = $("stage");
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const w = stage.clientWidth;
+      const h = stage.clientHeight;
+      art.width = Math.max(1, Math.floor(w * dpr));
+      art.height = Math.max(1, Math.floor(h * dpr));
+      art.style.width = w + "px";
+      art.style.height = h + "px";
+
+      artCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      artCtx.fillStyle = s.bg;
+      artCtx.fillRect(0, 0, w, h);
+
+      const side = Math.min(w, h);
+      const x = (w - side) / 2;
+      const y = (h - side) / 2;
+      // Scale the plot into the viewport. Smoothing off so glyphs stay type,
+      // not a photographic blur — distance does the low-pass, not the GPU.
+      artCtx.imageSmoothingEnabled = false;
+      artCtx.drawImage(plot, x, y, side, side);
+    }
+
+    function drawCurve(s) {
+      const ctx = curveCtx;
+      const w = curve.width;
+      const h = curve.height;
+      ctx.fillStyle = "#0a0a0a";
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.strokeStyle = "#2a2a2a";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(8, 8);
+      ctx.lineTo(8, h - 8);
+      ctx.lineTo(w - 8, h - 8);
+      ctx.stroke();
+
+      const padL = 8;
+      const padT = 8;
+      const padR = 8;
+      const padB = 8;
+      const innerW = w - padL - padR;
+      const innerH = h - padT - padB;
+
+      ctx.strokeStyle = "#c8c2b4";
+      ctx.beginPath();
+      const samples = innerW;
+      for (let i = 0; i <= samples; i++) {
+        const L = i / samples;
+        const k = exposure(L, s, 0);
+        const x = padL + (i / samples) * innerW;
+        const y = padT + (1 - (k - 1) / Math.max(1, s.maxK - 1)) * innerH;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+
+    function syncChrome() {
+      const s = readState();
+      updateReadouts(s);
+      syncModeExtras();
+      drawCurve(s);
+      return s;
+    }
+
+    function renderPlotNow() {
+      rendering = true;
+      plotDirty = false;
+      const s = syncChrome();
+      if (sourceImage) {
+        rebuildSample(s);
+        const lum = stretchLuminance(sampleGrid(s.n), s.stretch);
+        drawPreview(s, lum);
+        renderPlot(s, lum);
+        blitToStage(s);
+      }
+      rendering = false;
+      if (plotDirty) requestAnimationFrame(renderPlotNow);
+    }
+
+    function scheduleRender(heavy) {
+      syncChrome();
+      const kick = () => {
+        plotDirty = true;
+        if (!rendering) requestAnimationFrame(renderPlotNow);
+      };
+      if (heavy) {
+        clearTimeout(heavyTimer);
+        heavyTimer = setTimeout(kick, 80);
+        return;
+      }
+      kick();
+    }
+
+    // ─── presets: parameter bundles, not hidden taste ─────────────────────
+    const PRESETS = {
+      original: {
+        mode: "linear",
+        n: 128,
+        cell: 8,
+        maxK: 40,
+        alpha: 0.12,
+        gamma: 2.2,
+        thresh: 0.45,
+        levels: 4,
+        bigN: 255,
+        prime: 31,
+        jitter: 0,
+        text: DEFAULT_TEXT,
+        ink: "#e8e4d8",
+        bg: "#000000",
+      },
+      gamma: {
+        mode: "gamma",
+        gamma: 2.4,
+        maxK: 40,
+        alpha: 0.12,
+      },
+      threshold: {
+        mode: "threshold",
+        thresh: 0.45,
+        maxK: 40,
+        alpha: 0.14,
+      },
+      negative: {
+        mode: "invert",
+        maxK: 40,
+        alpha: 0.12,
+      },
+      error: {
+        mode: "error",
+        bigN: 255,
+        prime: 31,
+        jitter: 3,
+        maxK: 40,
+        alpha: 0.12,
+      },
+    };
+
+    function applyPreset(name) {
+      const p = PRESETS[name];
+      if (!p) return;
+      if (p.mode != null) ui.mode.value = p.mode;
+      if (p.n != null) ui.n.value = p.n;
+      if (p.cell != null) ui.cell.value = p.cell;
+      if (p.maxK != null) ui.maxK.value = p.maxK;
+      if (p.alpha != null) ui.alpha.value = p.alpha;
+      if (p.gamma != null) ui.gamma.value = p.gamma;
+      if (p.thresh != null) ui.thresh.value = p.thresh;
+      if (p.levels != null) ui.levels.value = p.levels;
+      if (p.bigN != null) ui.bigN.value = p.bigN;
+      if (p.prime != null) ui.prime.value = p.prime;
+      if (p.jitter != null) ui.jitter.value = p.jitter;
+      if (p.text != null) ui.text.value = p.text;
+      if (p.ink != null) ui.ink.value = p.ink;
+      if (p.bg != null) ui.bg.value = p.bg;
+      scheduleRender(true);
+    }
+
+    // ─── events ───────────────────────────────────────────────────────────
+    const heavyIds = new Set(["n", "cell", "maxK", "zoom", "panX", "panY", "stretch"]);
+    ["n", "cell", "mode", "gamma", "thresh", "levels", "bigN", "prime", "jitter", "maxK", "alpha", "ink", "bg", "zoom", "panX", "panY", "stretch"].forEach((id) => {
+      ui[id].addEventListener("input", () => scheduleRender(heavyIds.has(id)));
+    });
+    ui.text.addEventListener("input", () => scheduleRender(false));
+    ui.mode.addEventListener("change", () => scheduleRender(false));
+
+    async function loadUserFile(file) {
+      try {
+        if (typeof createImageBitmap === "function") {
+          const bmp = await createImageBitmap(file, { imageOrientation: "from-image" });
+          ingestImage(bmp);
+          return;
+        }
+      } catch (err) {
+        // fall through to Image()
+      }
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        ingestImage(img);
+        URL.revokeObjectURL(url);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        alert("这张图浏览器读不了。请先导出成 JPG 或 PNG 再上传（iPhone 的 HEIC 有时不行）。");
+      };
+      img.src = url;
+    }
+
+    ui.file.addEventListener("change", () => {
+      const file = ui.file.files && ui.file.files[0];
+      if (!file) return;
+      loadUserFile(file);
+    });
+
+    document.querySelectorAll("[data-preset]").forEach((btn) => {
+      btn.addEventListener("click", () => applyPreset(btn.getAttribute("data-preset")));
+    });
+
+    $("exportBtn").addEventListener("click", () => {
+      const url = plot.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "eye-of-the-beholder-exposure.png";
+      a.click();
+    });
+
+    window.addEventListener("resize", () => {
+      const s = readState();
+      if (plot.width) blitToStage(s);
+    });
+
+    // Placeholder so the system runs before any upload.
+    const placeholder = makePlaceholder();
+    placeholder.onload = () => ingestImage(placeholder);
+  </script>
+</body>
+</html>
