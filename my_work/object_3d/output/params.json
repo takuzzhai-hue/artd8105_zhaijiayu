@@ -1,0 +1,102 @@
+{
+  "rule": "The wall is kneaded, twisted and bent as one sheet. Inner stays wall-thick.",
+  "params": {
+    "height": 160.0,
+    "r_foot": 28.0,
+    "r_belly": 52.0,
+    "r_neck": 34.0,
+    "r_rim": 46.0,
+    "belly_t": 0.4,
+    "neck_t": 0.68,
+    "wall": 4.0,
+    "bottom": 3.6,
+    "min_wall": 1.6,
+    "min_hole": 14.0,
+    "fold_n": 3.0,
+    "fold_depth": 9.0,
+    "fold_soft": 0.65,
+    "waist": 4.5,
+    "seed": 2.0,
+    "thumb_deg": 50.0,
+    "thumb_sigma": 30.0,
+    "thumb1_deg": 30.0,
+    "thumb1_t": 0.46,
+    "thumb1_amp": -6.0,
+    "thumb2_deg": 145.0,
+    "thumb2_t": 0.34,
+    "thumb2_amp": -4.5,
+    "thumb3_deg": 255.0,
+    "thumb3_t": 0.58,
+    "thumb3_amp": 4.5,
+    "twist": 120.0,
+    "bend": 22.0,
+    "bend_deg": 32.0,
+    "rim_wave": 10.0,
+    "rim_lobes": 3.0,
+    "rim_band": 28.0,
+    "n_theta": 144,
+    "n_z": 100,
+    "n_rad": 6,
+    "n_rim": 3
+  },
+  "triangles": 61056,
+  "vertices": 30530,
+  "euler": {
+    "V": 30530,
+    "E": 91584,
+    "F": 61056,
+    "chi": 2,
+    "boundary": 0,
+    "nonmanifold": 0,
+    "bad_orient": 0,
+    "components": 1,
+    "volume": 179276.55880838112,
+    "min_wall_required": 1.6,
+    "min_wall_measured": 3.6
+  },
+  "min_radial_wall_mm": 3.9999999999999885,
+  "min_normal_wall_mm": 3.6,
+  "profile": [
+    {
+      "name": "foot",
+      "t": 0.0,
+      "z": 0.0,
+      "R0": 28.0
+    },
+    {
+      "name": "belly",
+      "t": 0.4,
+      "z": 64.0,
+      "R0": 52.0
+    },
+    {
+      "name": "neck",
+      "t": 0.68,
+      "z": 108.80000000000001,
+      "R0": 34.0
+    },
+    {
+      "name": "rim",
+      "t": 1.0,
+      "z": 160.0,
+      "R0": 46.0
+    }
+  ],
+  "bbox_min_mm": [
+    -41.9332802321978,
+    -49.9102826131381,
+    0.0
+  ],
+  "bbox_max_mm": [
+    72.74755172345853,
+    58.68277638115492,
+    170.9318235712049
+  ],
+  "dimensions_mm": [
+    114.68083195565633,
+    108.59305899429302,
+    170.9318235712049
+  ],
+  "self_check": "PASS",
+  "elapsed_s": 0.7890479564666748
+}

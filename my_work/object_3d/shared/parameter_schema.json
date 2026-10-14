@@ -1,0 +1,756 @@
+{
+  "version": 1,
+  "description": "Shared parameter schema for the browser and generate.py. One JSON object reproduces one model.",
+  "defaults": {
+    "family": "gyroid",
+    "size": [80, 80, 80],
+    "period": [24, 24, 24],
+    "phase": [0, 0, 0],
+    "wall_thickness": 1.6,
+    "level_offset": 0.0,
+    "twist": {
+      "mode": "off",
+      "deg_per_mm": 0.0,
+      "strength": 0.0,
+      "exponent": 1.0
+    },
+    "bend": {
+      "x": 0.0,
+      "y": 0.0,
+      "exponent": 2.0
+    },
+    "density": {
+      "gradient": "off",
+      "strength": 0.0,
+      "exponent": 1.0,
+      "taper_x": 0.0,
+      "taper_y": 0.0
+    },
+    "deformation": {
+      "bulge_strength": 0.0,
+      "bulge_radius": 24.0,
+      "bulge_z_position": 0.5,
+      "wave_amplitude": 0.0,
+      "wave_frequency": 2.0,
+      "wave_axis": "x",
+      "noise_strength": 0.0,
+      "noise_scale": 16.0,
+      "noise_seed": 1
+    },
+    "thickness": {
+      "mode": "constant",
+      "start": 1.6,
+      "end": 2.4,
+      "wave_amplitude": 0.3,
+      "wave_frequency": 2.0
+    },
+    "transform": {
+      "rotate": [0, 0, 0],
+      "mirror": [false, false, false]
+    },
+    "quality": {
+      "preview_resolution": 96,
+      "resolution": 320,
+      "field_smooth": 0,
+      "mesh_smooth": 0
+    }
+  },
+  "presets": {
+    "Classic Gyroid": {},
+    "Dense": {
+      "period": [12, 12, 12],
+      "wall_thickness": 1.8
+    },
+    "Open": {
+      "period": [40, 40, 40],
+      "wall_thickness": 1.8
+    },
+    "Vertical Stretch": {
+      "period": [18, 18, 48]
+    },
+    "Horizontal Stretch": {
+      "period": [48, 48, 16]
+    },
+    "Strong Twist": {
+      "twist": {
+        "mode": "linear",
+        "deg_per_mm": 1.8
+      }
+    },
+    "Curved": {
+      "bend": {
+        "x": 0.7,
+        "y": 0.15,
+        "exponent": 2
+      }
+    },
+    "Tapered": {
+      "density": {
+        "taper_x": 0.65,
+        "taper_y": 0.65
+      }
+    },
+    "Density Gradient": {
+      "density": {
+        "gradient": "z",
+        "strength": 0.75,
+        "exponent": 1.0
+      }
+    },
+    "Organic": {
+      "phase": [30, 110, 18],
+      "deformation": {
+        "bulge_strength": 0.35,
+        "bulge_radius": 28,
+        "bulge_z_position": 0.45,
+        "wave_amplitude": 2.4,
+        "wave_frequency": 1.5,
+        "wave_axis": "x",
+        "noise_strength": 3.2,
+        "noise_scale": 18,
+        "noise_seed": 4
+      }
+    },
+    "Extreme": {
+      "period": [15, 32, 13],
+      "level_offset": 0.22,
+      "twist": {
+        "mode": "nonlinear",
+        "strength": 140,
+        "exponent": 1.35
+      },
+      "bend": {
+        "x": 0.55,
+        "y": -0.35,
+        "exponent": 2
+      },
+      "density": {
+        "gradient": "radial",
+        "strength": 0.55,
+        "exponent": 1.1,
+        "taper_x": 0.4,
+        "taper_y": 0.15
+      },
+      "deformation": {
+        "noise_strength": 2.5,
+        "noise_scale": 14,
+        "noise_seed": 7
+      }
+    }
+  },
+  "presetNotes": {
+    "Classic Gyroid": "Even cells, no warp. The reference for every other preset.",
+    "Dense": "Short period. More cells inside the same cube.",
+    "Open": "Long period. Only a few cells, large openings.",
+    "Vertical Stretch": "Cells pulled taller than they are wide.",
+    "Horizontal Stretch": "Cells pulled wider than they are tall.",
+    "Strong Twist": "The field rotates with height. The cube does not.",
+    "Curved": "The field bends inside the fixed cube.",
+    "Tapered": "Smaller cells at the bottom, larger cells at the top.",
+    "Density Gradient": "The pattern opens gradually toward the top.",
+    "Organic": "Phase, wave, bulge, and sine-noise together.",
+    "Extreme": "Experimental. Several warps at once. Export may fail validation."
+  },
+  "ui": [
+    {
+      "id": "model",
+      "label": "Model",
+      "note": "The cube is a clipping window. The solid you see is the sheet, cut off on the six faces. There is no outer box skin.",
+      "controls": [
+        {
+          "key": "family",
+          "label": "Family",
+          "type": "select",
+          "options": ["gyroid", "diamond", "primitive"],
+          "help": "Which implicit equation is evaluated. Gyroid is a balanced labyrinth. Diamond is more triangular. Primitive is a softer network of holes."
+        },
+        {
+          "key": "size.0",
+          "label": "Size X",
+          "type": "number",
+          "min": 20,
+          "max": 100,
+          "step": 1,
+          "unit": "mm",
+          "safeMin": 60,
+          "safeMax": 90,
+          "help": "Width of the clipping cube. The pattern is cut at this plane; a wall is not built here."
+        },
+        {
+          "key": "size.1",
+          "label": "Size Y",
+          "type": "number",
+          "min": 20,
+          "max": 100,
+          "step": 1,
+          "unit": "mm",
+          "safeMin": 60,
+          "safeMax": 90,
+          "help": "Depth of the clipping cube."
+        },
+        {
+          "key": "size.2",
+          "label": "Size Z",
+          "type": "number",
+          "min": 20,
+          "max": 100,
+          "step": 1,
+          "unit": "mm",
+          "safeMin": 60,
+          "safeMax": 90,
+          "help": "Height of the clipping cube. The finished mesh sits on z = 0."
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "label": "Structure",
+      "controls": [
+        {
+          "key": "period.0",
+          "label": "Period X",
+          "type": "number",
+          "min": 8,
+          "max": 60,
+          "step": 0.5,
+          "unit": "mm",
+          "safeMin": 16,
+          "safeMax": 32,
+          "randomMin": 12,
+          "randomMax": 48,
+          "help": "Cell size along X. Smaller values repeat the pattern more densely. Independent of Y and Z, so cells can be stretched."
+        },
+        {
+          "key": "period.1",
+          "label": "Period Y",
+          "type": "number",
+          "min": 8,
+          "max": 60,
+          "step": 0.5,
+          "unit": "mm",
+          "safeMin": 16,
+          "safeMax": 32,
+          "randomMin": 12,
+          "randomMax": 48,
+          "help": "Cell size along Y."
+        },
+        {
+          "key": "period.2",
+          "label": "Period Z",
+          "type": "number",
+          "min": 8,
+          "max": 60,
+          "step": 0.5,
+          "unit": "mm",
+          "safeMin": 16,
+          "safeMax": 32,
+          "randomMin": 12,
+          "randomMax": 48,
+          "help": "Cell size along Z. Raise this alone to stretch the cells vertically."
+        },
+        {
+          "key": "level_offset",
+          "label": "Level Offset",
+          "type": "number",
+          "min": -1,
+          "max": 1,
+          "step": 0.01,
+          "safeMin": -0.12,
+          "safeMax": 0.12,
+          "randomMin": -0.35,
+          "randomMax": 0.35,
+          "help": "Moves the sheet off the zero level of the equation. It changes the balance of the two labyrinths. Extreme values can pinch a channel shut or disconnect the sheet."
+        },
+        {
+          "key": "wall_thickness",
+          "label": "Wall Thickness",
+          "type": "number",
+          "min": 1.2,
+          "max": 5,
+          "step": 0.1,
+          "unit": "mm",
+          "safeMin": 1.6,
+          "safeMax": 2.4,
+          "help": "Requested physical thickness of the sheet. The equation uses a separate number, t, which is calibrated against a measurement. The hard floor is 1.2 mm."
+        }
+      ]
+    },
+    {
+      "id": "position",
+      "label": "Position",
+      "controls": [
+        {
+          "key": "phase.0",
+          "label": "Phase X",
+          "type": "number",
+          "min": 0,
+          "max": 360,
+          "step": 1,
+          "unit": "deg",
+          "help": "Slides the pattern through the cube along X. The cube stays still. 360 degrees is one full cell."
+        },
+        {
+          "key": "phase.1",
+          "label": "Phase Y",
+          "type": "number",
+          "min": 0,
+          "max": 360,
+          "step": 1,
+          "unit": "deg",
+          "help": "Slides the pattern along Y."
+        },
+        {
+          "key": "phase.2",
+          "label": "Phase Z",
+          "type": "number",
+          "min": 0,
+          "max": 360,
+          "step": 1,
+          "unit": "deg",
+          "help": "Slides the pattern along Z."
+        }
+      ]
+    },
+    {
+      "id": "twist",
+      "label": "Twist",
+      "controls": [
+        {
+          "key": "twist.mode",
+          "label": "Twist Mode",
+          "type": "select",
+          "options": ["off", "linear", "nonlinear"],
+          "help": "Rotates the coordinate field around height before the equation is evaluated. Off leaves it straight."
+        },
+        {
+          "key": "twist.deg_per_mm",
+          "label": "Twist Rate",
+          "type": "number",
+          "min": -5,
+          "max": 5,
+          "step": 0.05,
+          "unit": "deg/mm",
+          "safeMin": -0.6,
+          "safeMax": 0.6,
+          "randomMin": -2.5,
+          "randomMax": 2.5,
+          "activeWhen": {"key": "twist.mode", "equals": "linear"},
+          "help": "Degrees of rotation per millimetre of height. At 1 deg/mm, an 80 mm cube twists 80 degrees from bottom to top."
+        },
+        {
+          "key": "twist.strength",
+          "label": "Twist Strength",
+          "type": "number",
+          "min": -360,
+          "max": 360,
+          "step": 1,
+          "unit": "deg",
+          "safeMin": -40,
+          "safeMax": 40,
+          "randomMin": -180,
+          "randomMax": 180,
+          "activeWhen": {"key": "twist.mode", "equals": "nonlinear"},
+          "help": "Total twist, in degrees, reached at the top of the cube when the mode is nonlinear."
+        },
+        {
+          "key": "twist.exponent",
+          "label": "Twist Exponent",
+          "type": "number",
+          "min": 0.25,
+          "max": 4,
+          "step": 0.05,
+          "safeMin": 0.8,
+          "safeMax": 1.5,
+          "activeWhen": {"key": "twist.mode", "equals": "nonlinear"},
+          "help": "1 spreads the twist evenly. Greater than 1 holds it back until near the top."
+        }
+      ]
+    },
+    {
+      "id": "curvature",
+      "label": "Curvature",
+      "controls": [
+        {
+          "key": "bend.x",
+          "label": "Bend X",
+          "type": "number",
+          "min": -1,
+          "max": 1,
+          "step": 0.01,
+          "safeMin": -0.2,
+          "safeMax": 0.2,
+          "randomMin": -0.7,
+          "randomMax": 0.7,
+          "help": "Bends the field in X as height changes. The clipping cube stays rectangular."
+        },
+        {
+          "key": "bend.y",
+          "label": "Bend Y",
+          "type": "number",
+          "min": -1,
+          "max": 1,
+          "step": 0.01,
+          "safeMin": -0.2,
+          "safeMax": 0.2,
+          "randomMin": -0.7,
+          "randomMax": 0.7,
+          "help": "Bends the field in Y as height changes."
+        },
+        {
+          "key": "bend.exponent",
+          "label": "Bend Exponent",
+          "type": "number",
+          "min": 0.5,
+          "max": 4,
+          "step": 0.1,
+          "safeMin": 1,
+          "safeMax": 2.5,
+          "help": "1 is a steady lean. 2 is a parabolic bow."
+        }
+      ]
+    },
+    {
+      "id": "density",
+      "label": "Density",
+      "controls": [
+        {
+          "key": "density.gradient",
+          "label": "Density Gradient",
+          "type": "select",
+          "options": ["off", "x", "y", "z", "radial"],
+          "help": "Varies the period across the cube so one region is denser than another. Radial is measured from the vertical centre line."
+        },
+        {
+          "key": "density.strength",
+          "label": "Gradient Strength",
+          "type": "number",
+          "min": -1,
+          "max": 1,
+          "step": 0.01,
+          "safeMin": -0.3,
+          "safeMax": 0.3,
+          "randomMin": -0.8,
+          "randomMax": 0.8,
+          "activeWhen": {"key": "density.gradient", "not": "off"},
+          "help": "Positive opens the cells along the gradient. Negative tightens them. 0 is uniform."
+        },
+        {
+          "key": "density.exponent",
+          "label": "Gradient Exponent",
+          "type": "number",
+          "min": 0.25,
+          "max": 4,
+          "step": 0.05,
+          "safeMin": 0.8,
+          "safeMax": 1.6,
+          "activeWhen": {"key": "density.gradient", "not": "off"},
+          "help": "1 is a steady change. Higher values push the change toward one end."
+        },
+        {
+          "key": "density.taper_x",
+          "label": "Taper X",
+          "type": "number",
+          "min": -0.85,
+          "max": 0.85,
+          "step": 0.01,
+          "safeMin": -0.25,
+          "safeMax": 0.25,
+          "randomMin": -0.6,
+          "randomMax": 0.6,
+          "help": "Changes the X cell size from bottom to top. Positive means smaller cells at the bottom and larger cells at the top."
+        },
+        {
+          "key": "density.taper_y",
+          "label": "Taper Y",
+          "type": "number",
+          "min": -0.85,
+          "max": 0.85,
+          "step": 0.01,
+          "safeMin": -0.25,
+          "safeMax": 0.25,
+          "randomMin": -0.6,
+          "randomMax": 0.6,
+          "help": "Same transition along Y."
+        }
+      ]
+    },
+    {
+      "id": "deformation",
+      "label": "Deformation",
+      "controls": [
+        {
+          "key": "deformation.bulge_strength",
+          "label": "Bulge Strength",
+          "type": "number",
+          "min": -1,
+          "max": 1,
+          "step": 0.01,
+          "safeMin": -0.15,
+          "safeMax": 0.15,
+          "randomMin": -0.6,
+          "randomMax": 0.6,
+          "help": "Expands or compresses the field around one height. Positive stretches the cells there. Negative packs them."
+        },
+        {
+          "key": "deformation.bulge_radius",
+          "label": "Bulge Radius",
+          "type": "number",
+          "min": 4,
+          "max": 80,
+          "step": 1,
+          "unit": "mm",
+          "safeMin": 16,
+          "safeMax": 36,
+          "help": "Width of the bulge region."
+        },
+        {
+          "key": "deformation.bulge_z_position",
+          "label": "Bulge Height",
+          "type": "number",
+          "min": 0,
+          "max": 1,
+          "step": 0.01,
+          "help": "Where the bulge sits. 0 is the bottom, 1 is the top."
+        },
+        {
+          "key": "deformation.wave_amplitude",
+          "label": "Wave Amplitude",
+          "type": "number",
+          "min": 0,
+          "max": 24,
+          "step": 0.1,
+          "unit": "mm",
+          "safeMin": 0,
+          "safeMax": 1.5,
+          "randomMin": 0,
+          "randomMax": 8,
+          "help": "How far a sine wave pushes the coordinates."
+        },
+        {
+          "key": "deformation.wave_frequency",
+          "label": "Wave Frequency",
+          "type": "number",
+          "min": 0.25,
+          "max": 12,
+          "step": 0.05,
+          "safeMin": 1,
+          "safeMax": 3,
+          "help": "How many waves fit along the axis."
+        },
+        {
+          "key": "deformation.wave_axis",
+          "label": "Wave Axis",
+          "type": "select",
+          "options": ["x", "y", "z"],
+          "help": "Which coordinate the wave pushes."
+        },
+        {
+          "key": "deformation.noise_strength",
+          "label": "Noise Strength",
+          "type": "number",
+          "min": 0,
+          "max": 16,
+          "step": 0.1,
+          "unit": "mm",
+          "safeMin": 0,
+          "safeMax": 1.5,
+          "randomMin": 0,
+          "randomMax": 6,
+          "help": "How far deterministic sine-noise displaces the field. It is not a random texture, and it needs no extra library."
+        },
+        {
+          "key": "deformation.noise_scale",
+          "label": "Noise Scale",
+          "type": "number",
+          "min": 4,
+          "max": 48,
+          "step": 0.5,
+          "unit": "mm",
+          "safeMin": 12,
+          "safeMax": 28,
+          "help": "Size of the wobble. Larger is a broader, slower disturbance."
+        },
+        {
+          "key": "deformation.noise_seed",
+          "label": "Noise Seed",
+          "type": "number",
+          "min": 0,
+          "max": 9999,
+          "step": 1,
+          "safeMin": 0,
+          "safeMax": 20,
+          "help": "Picks a different sine pattern. The same seed always rebuilds the same shape."
+        }
+      ]
+    },
+    {
+      "id": "thickness",
+      "label": "Thickness",
+      "controls": [
+        {
+          "key": "thickness.mode",
+          "label": "Thickness Mode",
+          "type": "select",
+          "options": ["constant", "z", "radial", "wave"],
+          "help": "Constant uses one wall. The other modes vary thickness in space. The field is clamped so the request never goes below 1.2 mm."
+        },
+        {
+          "key": "thickness.start",
+          "label": "Thickness Start",
+          "type": "number",
+          "min": 1.2,
+          "max": 5,
+          "step": 0.1,
+          "unit": "mm",
+          "safeMin": 1.6,
+          "safeMax": 2.2,
+          "activeWhen": {"key": "thickness.mode", "in": ["z", "radial"]},
+          "help": "Thickness at the bottom (Z mode) or at the centre (radial mode)."
+        },
+        {
+          "key": "thickness.end",
+          "label": "Thickness End",
+          "type": "number",
+          "min": 1.2,
+          "max": 5,
+          "step": 0.1,
+          "unit": "mm",
+          "safeMin": 1.6,
+          "safeMax": 2.8,
+          "activeWhen": {"key": "thickness.mode", "in": ["z", "radial"]},
+          "help": "Thickness at the top (Z mode) or toward the sides (radial mode)."
+        },
+        {
+          "key": "thickness.wave_amplitude",
+          "label": "Thickness Wave",
+          "type": "number",
+          "min": 0,
+          "max": 2,
+          "step": 0.05,
+          "unit": "mm",
+          "safeMin": 0,
+          "safeMax": 0.3,
+          "activeWhen": {"key": "thickness.mode", "equals": "wave"},
+          "help": "Added and subtracted from the requested wall along height. Anything under 1.2 mm is lifted back to 1.2."
+        },
+        {
+          "key": "thickness.wave_frequency",
+          "label": "Thickness Wave Frequency",
+          "type": "number",
+          "min": 0.25,
+          "max": 12,
+          "step": 0.05,
+          "safeMin": 1,
+          "safeMax": 3,
+          "activeWhen": {"key": "thickness.mode", "equals": "wave"},
+          "help": "How many thickness waves fit in the height."
+        }
+      ]
+    },
+    {
+      "id": "transform",
+      "label": "Transform",
+      "controls": [
+        {
+          "key": "transform.rotate.0",
+          "label": "Rotate X",
+          "type": "number",
+          "min": -180,
+          "max": 180,
+          "step": 1,
+          "unit": "deg",
+          "safeMin": -15,
+          "safeMax": 15,
+          "randomMin": -60,
+          "randomMax": 60,
+          "help": "Turns the field coordinates about the cube centre. The clipping cube does not rotate."
+        },
+        {
+          "key": "transform.rotate.1",
+          "label": "Rotate Y",
+          "type": "number",
+          "min": -180,
+          "max": 180,
+          "step": 1,
+          "unit": "deg",
+          "safeMin": -15,
+          "safeMax": 15,
+          "randomMin": -60,
+          "randomMax": 60,
+          "help": "Turns the field about Y."
+        },
+        {
+          "key": "transform.rotate.2",
+          "label": "Rotate Z",
+          "type": "number",
+          "min": -180,
+          "max": 180,
+          "step": 1,
+          "unit": "deg",
+          "safeMin": -15,
+          "safeMax": 15,
+          "randomMin": -60,
+          "randomMax": 60,
+          "help": "Turns the field about Z."
+        },
+        {
+          "key": "transform.mirror.0",
+          "label": "Mirror X",
+          "type": "bool",
+          "help": "Reflects the field across the middle of the cube on X."
+        },
+        {
+          "key": "transform.mirror.1",
+          "label": "Mirror Y",
+          "type": "bool",
+          "help": "Reflects the field across the middle of the cube on Y."
+        },
+        {
+          "key": "transform.mirror.2",
+          "label": "Mirror Z",
+          "type": "bool",
+          "help": "Reflects the field across the mid-height of the cube."
+        }
+      ]
+    },
+    {
+      "id": "quality",
+      "label": "Quality",
+      "note": "The viewport uses the preview grid. The printable STL uses the final grid, then thickness calibration and an independent check. 320³ is about a gigabyte of working memory. 384³ can be several gigabytes and a very large file.",
+      "controls": [
+        {
+          "key": "quality.preview_resolution",
+          "label": "Preview Resolution",
+          "type": "select",
+          "options": ["64", "96", "128"],
+          "help": "Grid for the on-screen mesh. While a slider is moving, the view drops lower and rebuilds when you release it."
+        },
+        {
+          "key": "quality.resolution",
+          "label": "Final Resolution",
+          "type": "select",
+          "options": ["192", "256", "320", "384"],
+          "help": "Grid for the STL. Default 320. A wall of 1.6 mm then spans about 6 voxels. Lower grids are faster and less trustworthy for thickness."
+        },
+        {
+          "key": "quality.field_smooth",
+          "label": "Field Smooth",
+          "type": "number",
+          "min": 0,
+          "max": 4,
+          "step": 0.1,
+          "help": "Optional blur of the field, in voxels, before the surface is extracted. 0 leaves the cube cut sharp. Above 0 rounds that cut and can thin the wall after it was measured."
+        },
+        {
+          "key": "quality.mesh_smooth",
+          "label": "Mesh Smooth",
+          "type": "number",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "help": "Optional smoothing of the mesh after extraction. 0 is off. Turning it up softens the clipped faces."
+        }
+      ]
+    }
+  ]
+}

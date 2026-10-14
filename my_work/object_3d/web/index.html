@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gyroid</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./vendor/three.module.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <main class="stage">
+    <canvas id="view"></canvas>
+    <div id="compare" class="compare" hidden></div>
+    <div class="stage-meta">
+      <p id="status" class="status">Preview</p>
+      <p id="dims" class="dims"></p>
+      <p id="formula" class="formula"></p>
+      <p id="stage-note" class="note"></p>
+    </div>
+    <div class="stage-tools">
+      <button type="button" id="reset-cam">Reset camera</button>
+      <button type="button" id="toggle-surface" aria-pressed="true">Surface</button>
+      <button type="button" id="toggle-wire" aria-pressed="false">Wireframe</button>
+      <button type="button" id="toggle-box" aria-pressed="true">Bounds</button>
+    </div>
+  </main>
+  <aside class="panel">
+    <header class="panel-head">
+      <p class="eyebrow">ARTD8105 · rule in 3D</p>
+      <h1>Gyroid</h1>
+      <p class="lede">A fixed cubic window. The sheet inside it is the only solid.</p>
+    </header>
+    <div class="panel-tools">
+      <label class="preset">
+        <span>Preset</span>
+        <select id="preset"></select>
+      </label>
+      <div class="button-row">
+        <button type="button" id="undo">Undo</button>
+        <button type="button" id="redo">Redo</button>
+        <button type="button" id="reset">Reset</button>
+      </div>
+      <div class="button-row">
+        <button type="button" id="random">Randomize</button>
+        <button type="button" id="random-safe">Randomize safe</button>
+      </div>
+      <div class="button-row">
+        <button type="button" id="save">Save parameters</button>
+        <button type="button" id="load">Load parameters</button>
+        <input id="load-file" type="file" accept="application/json,.json" hidden>
+      </div>
+      <div class="button-row">
+        <button type="button" id="compare-add">Add to compare</button>
+        <button type="button" id="compare-toggle">Compare</button>
+        <button type="button" id="compare-clear">Clear</button>
+      </div>
+      <p id="preset-note" class="hint"></p>
+      <p id="compare-count" class="hint"></p>
+    </div>
+    <div id="groups" class="groups"></div>
+    <footer class="panel-foot">
+      <button type="button" id="generate" class="primary">Generate printable STL</button>
+      <ol id="progress" class="progress" hidden></ol>
+      <div id="result" class="result"></div>
+    </footer>
+  </aside>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
