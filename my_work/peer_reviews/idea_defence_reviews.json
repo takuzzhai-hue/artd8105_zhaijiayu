@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "course": "ARTD8105",
+  "session": 8,
+  "session_date": "2026-10-14",
+  "reviewer_name": "ZHAI JIAYU",
+  "exported_at": "2026-10-14T05:02:57.139Z",
+  "reviews": [
+    {
+      "id": "86cf1626-0f51-4a72-b264-2239389672f5",
+      "reviewer_name": "ZHAI JIAYU",
+      "presenter_names": "jiangyihan",
+      "project_title": "from unexpected from to design possibly",
+      "contribution": "这个项目试图提出一个介于宏大符号学理论与单一算法案例之间的中间框架，说明 AI 生成偏差如何在设计实践中转化为新的意义生成机制。",
+      "strongest_support": "作者计划通过 六个保留参数、尺寸和形态演变过程的 3D 打印物体，把“偏差如何引发重新解释”这个过程具体化，而不是只停留在抽象理论层面。",
+      "main_challenge": "目前最大的挑战是：项目虽然提出了“偏差会触发意义重构”，但还缺少能够证明 设计师确实因此产生了新的解释或反思 的证据；如果能加入设计师对这些物体的解读记录、访谈，或对比不同偏差条件下的反应，论证会更强。",
+      "created_at": "2026-10-14T02:20:03.994Z",
+      "updated_at": "2026-10-14T03:29:42.412Z",
+      "revisions": [
+        {
+          "id": "86cf1626-0f51-4a72-b264-2239389672f5",
+          "reviewer_name": "ZHAI JIAYU",
+          "presenter_names": "1",
+          "project_title": "1",
+          "contribution": "1",
+          "strongest_support": "1",
+          "main_challenge": "1",
+          "created_at": "2026-10-14T02:20:03.994Z",
+          "updated_at": "2026-10-14T02:20:03.994Z"
+        }
+      ]
+    },
+    {
+      "id": "cf27824f-f4f8-44a6-9167-3f7f3a0dc687",
+      "reviewer_name": "ZHAI JIAYU",
+      "presenter_names": "qujiafeng",
+      "project_title": "a wall-scale pond of light, generated live from a checked eDNA corpus — the case, not the contribution",
+      "contribution": "这个项目试图提出一种新的生成界面思路：让证据边界直接成为生成系统的内部约束，从而改变观看者理解“自然”图像的方式。",
+      "strongest_support": "作者已经把这个问题具体落实为一个清晰的装置方案：以 池塘光池、五根阻尼杆、未分配序列以及带来源等级的形态显示，把抽象的“证据限制”转化为可操作、可感知的交互结构。",
+      "main_challenge": "项目主张这种界面能够“约束”观看者，但还需要更明确地证明观众的理解确实因此被改变；如果能通过观众演示、故障模式记录或对比测试，展示哪些限制有效、哪些会被绕过，论证会更扎实。",
+      "created_at": "2026-10-14T03:33:51.194Z",
+      "updated_at": "2026-10-14T03:33:51.194Z"
+    },
+    {
+      "id": "f1ce96d9-0059-4d5b-bb0b-86dabb6fadf8",
+      "reviewer_name": "ZHAI JIAYU",
+      "presenter_names": "zhaojingtong",
+      "project_title": "线条粗细如何影响生成艺术中几何符号的可辨识性？",
+      "contribution": "这个项目试图通过控制线条粗细，找到不同几何符号在视觉上变得无法区分的临界点，为生成艺术中的视觉辨识提供具体的研究依据。",
+      "strongest_support": "最有力的支持是项目采用相同的生成规则、只改变线条粗细，通过六张实体作品进行比较，能够较清楚地观察线宽对符号辨识的影响。",
+      "main_challenge": "目前缺少明确的可辨识性判断标准。可以通过观众辨识测试，结合实际线宽和线间距的测量，确定符号在哪个临界点开始变得难以区分。",
+      "created_at": "2026-10-14T03:45:32.697Z",
+      "updated_at": "2026-10-14T03:45:32.697Z"
+    },
+    {
+      "id": "0c114435-4262-4e4b-9e45-8156475f2b88",
+      "reviewer_name": "ZHAI JIAYU",
+      "presenter_names": "xuwenjie gaoyun",
+      "project_title": "VR 中的视觉呼吸反馈如何帮助用户建立独立冥想能力？",
+      "contribution": "这个项目试图提出一种通过调整视觉反馈时间和逐步撤除引导，帮助用户从依赖 VR 提示过渡到独立冥想的设计方法。",
+      "strongest_support": "最有力的支持是项目设计了 2×2 对照实验，比较不同反馈持续时间和引导方式，并通过无反馈测试、呼吸记录及注意力测量来评估实际效果。",
+      "main_challenge": "目前还没有证据证明 VR 中的训练效果可以迁移到现实生活中的独立冥想。可以增加 VR 外的练习测试，观察用户是否真正减少对视觉提示的依赖。",
+      "created_at": "2026-10-14T03:51:19.105Z",
+      "updated_at": "2026-10-14T03:51:19.105Z"
+    },
+    {
+      "id": "1c410df2-8b44-4865-9ce6-b144e955fc21",
+      "reviewer_name": "ZHAI JIAYU",
+      "presenter_names": "huangjinyu",
+      "project_title": "文字如何通过澳门街牌的设计与公共参与形成纪念碑性？",
+      "contribution": "这个项目试图建立一个分析框架，解释文字内容、物理呈现和公众参与如何共同创造公共记忆与纪念碑性。",
+      "strongest_support": "最有力的支持是结合已有文字纪念艺术案例的比较分析与澳门街牌的实际设计实践，从文字、材料和空间三个方面探索纪念性形成的条件。",
+      "main_challenge": "目前尚未证明文字装置如何真正形成公众的纪念体验。可以通过现场观察或观众访谈，了解人们是否将街牌视为纪念物，而不仅仅是普通的信息标识。",
+      "created_at": "2026-10-14T04:12:46.865Z",
+      "updated_at": "2026-10-14T04:12:46.865Z"
+    },
+    {
+      "id": "7a56e77a-1afe-474b-8ffd-d0b1f03c3d5d",
+      "reviewer_name": "ZHAI JIAYU",
+      "presenter_names": "Angelica Zhang",
+      "project_title": "From AI‑Generated Parts to Physical Sculpture: Selection, Rejection, and Assembly in Human‑AI Co‑Creation",
+      "contribution": "这个项目试图通过实体雕塑创作，说明人类的创造性不仅体现在生成内容的选择上，还体现在拒绝、组合和物理构成的决策过程中。",
+      "strongest_support": "最有力的支持是项目计划记录 AI 生成的候选部件、人类的选择与拒绝过程，以及五个部件的实际组装结果，使创作决策具有可追溯的证据。",
+      "main_challenge": "目前还缺少明确的标准来判断哪些创造性贡献来自人类，而不是 AI 生成规则本身。可以通过对比不同选择与组装方案，具体展示人类决策如何改变最终雕塑的形式。",
+      "created_at": "2026-10-14T04:18:59.746Z",
+      "updated_at": "2026-10-14T04:18:59.746Z"
+    },
+    {
+      "id": "6e447fee-b523-48d6-a1d8-18f638f93e0a",
+      "reviewer_name": "ZHAI JIAYU",
+      "presenter_names": "joanna",
+      "project_title": "Parametric Decoding in History: Correspondences between Geometric Shapes and Historical Sites in the 1889 Praia Grande",
+      "contribution": "这个项目试图提出一种基于历史证据的参数化解码方法，通过古地图与3D几何之间的视觉差异，重新呈现被传统制图方式简化或隐藏的历史空间变化。",
+      "strongest_support": "最有力的支持是项目将五个历史参数与1889年地图坐标对应，并通过可溯源的参数规则生成3D实体，使历史档案与几何表达能够进行直接比较。",
+      "main_challenge": "目前尚未充分证明参数化几何与历史事实之间的对应关系，以及视觉差异为何能够代表历史中的权力和空间变化。可以通过具体史料验证每个参数，并解释生成结果与历史地图之间的差异意味着什么。",
+      "created_at": "2026-10-14T04:22:15.260Z",
+      "updated_at": "2026-10-14T04:22:15.260Z"
+    },
+    {
+      "id": "468aef61-9ea4-4224-8b90-1f166eb1f733",
+      "reviewer_name": "ZHAI JIAYU",
+      "presenter_names": "meixingyue peijialingren",
+      "project_title": "生成式灯光装置如何通过五态循环实现可重复的“视觉休息”？",
+      "contribution": "这个项目试图提出一种面向生成式灯光装置的循环方法，用五个可重复的状态来组织活动与静止之间的过渡。",
+      "strongest_support": "最有力的支持是项目将“视觉休息”具体落实为 上升、减速、退潮、静止、回潮 五个状态，并通过灯箱原型、扩散器和 RGB LED 编程来直接测试这些状态在真实光环境中的效果。",
+      "main_challenge": "还需要证明这五个状态确实比更简单的活动/静止切换更有效。可以通过对比实验或观众观察，比较五态循环和突然切换在观看体验上的差异。",
+      "created_at": "2026-10-14T04:26:44.738Z",
+      "updated_at": "2026-10-14T04:26:44.738Z"
+    },
+    {
+      "id": "82b25db3-1627-46be-8307-64c9ea4ecb60",
+      "reviewer_name": "ZHAI JIAYU",
+      "presenter_names": "leishiyu",
+      "project_title": "如何把超越人类的数据转化为一个可进入、可互动的共生空间？",
+      "contribution": "这个项目试图提出一个可进入、可游玩的“数据森林”原型，把超越人类的数据从图表转化为空间化、关系化的体验。",
+      "strongest_support": "项目不仅使用 天气、鸟类、物种等开放数据 来驱动森林生长与变化，还让访客的痕迹和目击记录重新回流进系统，形成一个数据生态循环。",
+      "main_challenge": "还需要证明“进入这个森林”真的会增强人与非人类数据的关系感，而不只是形成一个好看的交互装置。可以通过观众观察、访谈或体验记录，说明人们是否真的改变了对数据的理解。",
+      "created_at": "2026-10-14T04:34:59.376Z",
+      "updated_at": "2026-10-14T04:34:59.376Z"
+    },
+    {
+      "id": "5ced3559-5f5f-4124-8041-609171bf21e3",
+      "reviewer_name": "ZHAI JIAYU",
+      "presenter_names": "luowen",
+      "project_title": "不同的行为解释方式如何影响人工生成环境的生态响应？",
+      "contribution": "这个项目试图将行为解释作为独立的设计变量，揭示人类预设规则与 AI 自主解释如何产生不同的人工生态结果。",
+      "strongest_support": "最有力的支持是项目设计了 A/B 对照实验，在相同行为输入和固定生态规则下，比较人工映射与 AI 解释生成的森林变化，从而更清晰地观察解释机制的影响。",
+      "main_challenge": "目前尚未证明观察到的生态差异完全来自解释方式，而不是 AI 输出的随机性。可以通过重复测试相同输入、控制随机因素，并记录解释过程来加强论证。",
+      "created_at": "2026-10-14T04:46:51.363Z",
+      "updated_at": "2026-10-14T04:46:51.363Z"
+    },
+    {
+      "id": "b247df30-51a1-4315-b2d1-6233efc848e0",
+      "reviewer_name": "ZHAI JIAYU",
+      "presenter_names": "wenxueying",
+      "project_title": "脑电信号如何通过生成规则和视觉记忆影响符号的持续演变？",
+      "contribution": "这个项目试图提出一种具有视觉记忆的脑电生成艺术方法，让 EEG 信号影响符号的长期演变过程，而不仅仅是即时的视觉变化。",
+      "strongest_support": "最有力的支持是项目计划比较直接视觉映射与基于局部规则的生成映射，观察脑电信号如何通过不同机制影响符号的传播、连接和累积。",
+      "main_challenge": "目前原型仍使用模拟脑电数据，尚未证明真实 EEG 信号能产生有意义的视觉演变。可以使用真实脑电数据进行测试，并比较两种映射方式产生的视觉结果。",
+      "created_at": "2026-10-14T04:47:32.469Z",
+      "updated_at": "2026-10-14T04:47:32.469Z"
+    },
+    {
+      "id": "02cd6e70-13f6-4979-840f-d4e30a708b0a",
+      "reviewer_name": "ZHAI JIAYU",
+      "presenter_names": "wangqiaoli",
+      "project_title": "如何通过参数化设计生成结构连续、可调节且可3D打印的编织扇面？",
+      "contribution": "这个项目试图提出一种结合边界识别、连续编织路径与3D打印约束的参数化设计方法，使复杂编织结构能够在不规则框架内实时调整并制造。",
+      "strongest_support": "最有力的支持是项目将连续路径生成、自动边界锚定和实时打印约束检查整合进 WebGL 系统，并计划通过实体打印与失败测试验证方法的可行性。",
+      "main_challenge": "目前尚未证明系统在不同参数组合下都能保持结构连续和可打印性。可以测试多种密度、宽度及厚度组合，并记录打印失败和成功的条件，明确方法的适用范围。",
+      "created_at": "2026-10-14T04:56:42.151Z",
+      "updated_at": "2026-10-14T04:56:42.151Z"
+    },
+    {
+      "id": "33e1bc48-3ce5-4c41-b62c-7b3e9f4a8a8b",
+      "reviewer_name": "ZHAI JIAYU",
+      "presenter_names": "songkangqi",
+      "project_title": "Project：Compendium Fireworks L‑system",
+      "contribution": "这个项目试图提出一种把游戏过程自动转化为实体雕塑的方法，让玩家的行动轨迹本身成为可保存、可比较的艺术作品。",
+      "strongest_support": "最有力的支持是项目已经明确了记录来源和形式：L-system 树结构、玩家路径、Boss 烟火事件共同构成雕塑，并计划用同一棵固定树比较多次不同游玩结果。",
+      "main_challenge": "目前最大的挑战是：还需要证明这些雕塑真的能让人读出不同的游玩过程，而不只是形成复杂造型。可以通过给雕塑加注释、比较三次不同路线，并邀请玩家解释他们是否能认出自己的行动痕迹来加强论证。",
+      "created_at": "2026-10-14T04:57:18.385Z",
+      "updated_at": "2026-10-14T04:57:18.385Z"
+    }
+  ]
+}
