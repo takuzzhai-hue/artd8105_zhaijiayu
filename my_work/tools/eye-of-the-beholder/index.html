@@ -26,34 +26,6 @@
       display: flex;
       overflow: hidden;
     }
-    body.phone-upload {
-      display: block;
-      overflow: auto;
-      font: 16px/1.45 -apple-system, "PingFang SC", sans-serif;
-    }
-    body.phone-upload #panel,
-    body.phone-upload #stage { display: none; }
-    #phoneUpload { display: none; }
-    body.phone-upload #phoneUpload { display: block; }
-    #phoneUpload {
-      max-width: 420px;
-      margin: 0 auto;
-      padding: 28px 20px 48px;
-    }
-    #phoneUpload h1 { font-size: 1.15rem; margin: 0 0 8px; }
-    #phoneUpload p { color: var(--muted); font-size: 0.95rem; }
-    #phonePick {
-      display: block;
-      width: 100%;
-      margin: 24px 0 12px;
-      padding: 22px 16px;
-      font: inherit;
-      font-size: 1.05rem;
-      color: #0c0c0c;
-      background: #e8e4d8;
-      border: 0;
-      min-height: 52px;
-    }
     #panel {
       width: var(--panel);
       flex-shrink: 0;
@@ -189,18 +161,10 @@
     #qrWrap { margin-top: 12px; }
     #qrcode { width: 180px; height: 180px; margin: 8px 0; background: #fff; padding: 6px; }
     #qrcode img, #qrcode canvas { display: block; width: 100%; height: auto; }
-    #qrUrl { color: var(--muted); font-size: 10px; word-break: break-all; }
+    #qrUrl { display: none; }
   </style>
 </head>
 <body>
-  <div id="phoneUpload">
-    <h1>把一张照片送到屏幕</h1>
-    <p>用自己的流量即可，不必连展场 Wi-Fi。选相册或现场拍一张。</p>
-    <button type="button" id="phonePick">选择或拍摄照片</button>
-    <input id="phoneFile" type="file" accept="image/*" style="display:none">
-    <p id="phoneStatus"></p>
-  </div>
-
   <aside id="panel">
     <h1>Eye of the Beholder<br>Exposure System</h1>
     <p class="sub">Schroeder &amp; Hanauer, 1968 — SC 4020 simulated exposure. Tone is not gray: it is how many times a character is flashed.</p>
@@ -322,53 +286,8 @@
   </div>
 
   <script>
-    // Same file, two modes:
-    //   tablet / display → full exposure system
-    //   ?upload=1&topic=… → phone send-a-photo page (must be opened from the public GitHub URL)
-    const PAGE_QUERY = new URLSearchParams(location.search);
-    const IS_PHONE_UPLOAD = PAGE_QUERY.get("upload") === "1";
-    const PUBLIC_UPLOAD = "https://raw.githack.com/takuzzhai-hue/artd8105_zhaijiayu/main/my_work/tools/eye-of-the-beholder/upload.html";
-    const PUBLIC_PAGE = PUBLIC_UPLOAD;
+    const PUBLIC_UPLOAD = "https://takuzzhai-hue.github.io/artd8105_zhaijiayu/my_work/tools/eye-of-the-beholder/upload.html";
 
-    if (IS_PHONE_UPLOAD) {
-      const topic = PAGE_QUERY.get("topic") || "";
-      location.replace(PUBLIC_UPLOAD + (topic ? "?topic=" + encodeURIComponent(topic) : ""));
-    }
-
-    async function sendPhonePhoto(file, topic, setStatus, pick, fileInput) {
-      setStatus("正在送出…");
-      pick.disabled = true;
-      try {
-        const bmp = await createImageBitmap(file);
-        const maxEdge = 1600;
-        const scale = Math.min(1, maxEdge / Math.max(bmp.width, bmp.height));
-        const w = Math.max(1, Math.round(bmp.width * scale));
-        const h = Math.max(1, Math.round(bmp.height * scale));
-        const canvas = document.createElement("canvas");
-        canvas.width = w;
-        canvas.height = h;
-        canvas.getContext("2d").drawImage(bmp, 0, 0, w, h);
-        if (bmp.close) bmp.close();
-        const blob = await new Promise((resolve, reject) => {
-          canvas.toBlob((b) => b ? resolve(b) : reject(new Error("encode")), "image/jpeg", 0.86);
-        });
-        const res = await fetch("https://ntfy.sh/" + encodeURIComponent(topic), {
-          method: "PUT",
-          headers: { Filename: "photo.jpg", "Content-Type": "image/jpeg", Title: "eotb" },
-          body: blob,
-        });
-        if (!res.ok) throw new Error("http " + res.status);
-        setStatus("已送到屏幕。可以再选一张。");
-      } catch (err) {
-        setStatus("没有送出。请确认手机能上网（流量即可）。");
-      }
-      pick.disabled = false;
-      fileInput.value = "";
-    }
-
-    if (IS_PHONE_UPLOAD) {
-      // Do not start the plotter on the visitor's phone.
-    } else {
     // ─── Eye of the Beholder — Exposure System ─────────────────────────────
     // Recreates the 1968 Schroeder / Hanauer pipeline:
     //   sample a photo on an N×N grid → drop looping text into each cell →
@@ -977,7 +896,7 @@
 
     // Internet relay (ntfy.sh): phones on cellular, Harmony screen on venue Wi-Fi.
     // The upload page must be a public URL so the QR can open on any network.
-    const UPLOAD_PAGE = PUBLIC_PAGE;
+    const UPLOAD_PAGE = PUBLIC_UPLOAD;
 
     function roomTopic() {
       const key = "eotb_ntfy_topic";
@@ -1061,7 +980,6 @@
     // Placeholder so the system runs before any upload.
     const placeholder = makePlaceholder();
     placeholder.onload = () => ingestImage(placeholder);
-    } // end display mode
   </script>
 </body>
 </html>
