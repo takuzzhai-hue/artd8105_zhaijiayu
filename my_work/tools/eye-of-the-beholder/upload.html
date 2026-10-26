@@ -39,7 +39,8 @@
     <input id="file" type="file" accept="image/*">
   </label>
   <script>
-    const topic = (location.hash.replace(/^#/, "") || new URLSearchParams(location.search).get("topic") || "").trim();
+    const q = new URLSearchParams(location.search);
+    const topic = (q.get("t") || q.get("topic") || location.hash.replace(/^#/, "") || "").trim();
     const fileInput = document.getElementById("file");
     const status = document.getElementById("status");
     function setStatus(msg) { status.textContent = msg; }

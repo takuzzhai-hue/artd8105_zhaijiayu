@@ -210,7 +210,7 @@
     </label>
     <p class="sub" id="fileNote">原作裁的是眼睛局部。请把瞳孔放进下面的方框里；室内照片请打开对比度拉伸。</p>
     <div id="qrWrap">
-      <p class="sub" style="margin:8px 0 0">扫码后直接进入选照片。观众用自己的流量即可。</p>
+      <p class="sub" style="margin:8px 0 0">扫码上传：扫码上传你的照片（需打开vpn）。</p>
       <div id="qrcode"></div>
       <p id="qrUrl"></p>
       <p class="sub" id="qrStatus"></p>
@@ -327,12 +327,12 @@
     //   ?upload=1&topic=… → phone send-a-photo page (must be opened from the public GitHub URL)
     const PAGE_QUERY = new URLSearchParams(location.search);
     const IS_PHONE_UPLOAD = PAGE_QUERY.get("upload") === "1";
-    const PUBLIC_UPLOAD = "https://cdn.jsdelivr.net/gh/takuzzhai-hue/artd8105_zhaijiayu@main/my_work/tools/eye-of-the-beholder/upload.html";
+    const PUBLIC_UPLOAD = "https://takuzzhai-hue.github.io/artd8105_zhaijiayu/my_work/tools/eye-of-the-beholder/upload.html";
     const PUBLIC_PAGE = PUBLIC_UPLOAD;
 
     if (IS_PHONE_UPLOAD) {
       const topic = PAGE_QUERY.get("topic") || "";
-      location.replace(PUBLIC_UPLOAD + (topic ? "#" + encodeURIComponent(topic) : ""));
+      location.replace(PUBLIC_UPLOAD + (topic ? "?t=" + encodeURIComponent(topic) : ""));
     }
 
     async function sendPhonePhoto(file, topic, setStatus, pick, fileInput) {
@@ -1013,7 +1013,7 @@
 
     function initScanUpload() {
       const topic = roomTopic();
-      const uploadUrl = PUBLIC_UPLOAD + "#" + encodeURIComponent(topic);
+      const uploadUrl = PUBLIC_UPLOAD + "?t=" + encodeURIComponent(topic);
       const box = $("qrcode");
       $("qrUrl").textContent = uploadUrl;
       $("qrStatus").textContent = "等待扫码…";
