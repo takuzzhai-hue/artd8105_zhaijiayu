@@ -210,7 +210,7 @@
     </label>
     <p class="sub" id="fileNote">原作裁的是眼睛局部。请把瞳孔放进下面的方框里；室内照片请打开对比度拉伸。</p>
     <div id="qrWrap">
-      <p class="sub" style="margin:8px 0 0">扫码上传：观众用自己的流量即可，不必连同一个 Wi-Fi。鸿蒙屏幕需要能上网。</p>
+      <p class="sub" style="margin:8px 0 0">扫码后直接进入选照片。观众用自己的流量即可。</p>
       <div id="qrcode"></div>
       <p id="qrUrl"></p>
       <p class="sub" id="qrStatus"></p>
@@ -327,24 +327,12 @@
     //   ?upload=1&topic=… → phone send-a-photo page (must be opened from the public GitHub URL)
     const PAGE_QUERY = new URLSearchParams(location.search);
     const IS_PHONE_UPLOAD = PAGE_QUERY.get("upload") === "1";
-    const PUBLIC_PAGE = "https://raw.githack.com/takuzzhai-hue/artd8105_zhaijiayu/main/my_work/tools/eye-of-the-beholder/index.html";
+    const PUBLIC_UPLOAD = "https://cdn.jsdelivr.net/gh/takuzzhai-hue/artd8105_zhaijiayu@main/my_work/tools/eye-of-the-beholder/upload.html";
+    const PUBLIC_PAGE = PUBLIC_UPLOAD;
 
     if (IS_PHONE_UPLOAD) {
-      document.body.classList.add("phone-upload");
       const topic = PAGE_QUERY.get("topic") || "";
-      const pick = document.getElementById("phonePick");
-      const fileInput = document.getElementById("phoneFile");
-      const status = document.getElementById("phoneStatus");
-      const setStatus = (msg) => { status.textContent = msg; };
-      if (!topic) {
-        pick.disabled = true;
-        setStatus("缺少屏幕编号。请重新扫描屏幕上的二维码。");
-      }
-      pick.addEventListener("click", () => fileInput.click());
-      fileInput.addEventListener("change", () => {
-        const file = fileInput.files && fileInput.files[0];
-        if (file) sendPhonePhoto(file, topic, setStatus, pick, fileInput);
-      });
+      location.replace(PUBLIC_UPLOAD + (topic ? "#" + encodeURIComponent(topic) : ""));
     }
 
     async function sendPhonePhoto(file, topic, setStatus, pick, fileInput) {
@@ -1025,7 +1013,7 @@
 
     function initScanUpload() {
       const topic = roomTopic();
-      const uploadUrl = UPLOAD_PAGE + "?upload=1&topic=" + encodeURIComponent(topic);
+      const uploadUrl = PUBLIC_UPLOAD + "#" + encodeURIComponent(topic);
       const box = $("qrcode");
       $("qrUrl").textContent = uploadUrl;
       $("qrStatus").textContent = "等待扫码…";
