@@ -332,7 +332,7 @@
 
     if (IS_PHONE_UPLOAD) {
       const topic = PAGE_QUERY.get("topic") || "";
-      location.replace(PUBLIC_UPLOAD + (topic ? "?t=" + encodeURIComponent(topic) : ""));
+      location.replace(PUBLIC_UPLOAD + (topic ? "?topic=" + encodeURIComponent(topic) : ""));
     }
 
     async function sendPhonePhoto(file, topic, setStatus, pick, fileInput) {
@@ -1013,7 +1013,7 @@
 
     function initScanUpload() {
       const topic = roomTopic();
-      const uploadUrl = PUBLIC_UPLOAD + "?t=" + encodeURIComponent(topic);
+      const uploadUrl = PUBLIC_UPLOAD + "?topic=" + encodeURIComponent(topic);
       const box = $("qrcode");
       $("qrUrl").textContent = uploadUrl;
       $("qrStatus").textContent = "等待扫码…";
