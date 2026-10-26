@@ -114,6 +114,11 @@
       text-align: center;
       letter-spacing: 0.04em;
     }
+    html:fullscreen, html:-webkit-full-screen,
+    html:fullscreen body, html:-webkit-full-screen body {
+      width: 100%;
+      height: 100%;
+    }
     .mode-extra { display: none; }
     .mode-extra.on { display: block; }
     #curve {
@@ -168,6 +173,8 @@
   <aside id="panel">
     <h1>Eye of the Beholder<br>Exposure System</h1>
     <p class="sub">Schroeder &amp; Hanauer, 1968 — SC 4020 simulated exposure. Tone is not gray: it is how many times a character is flashed.</p>
+    <button type="button" class="primary" id="fullscreenBtn" style="margin-top:0">全屏</button>
+    <p class="sub" id="fullscreenNote" style="margin-top:8px"></p>
 
     <label>Image
       <input id="file" type="file" accept="image/*">
@@ -971,6 +978,34 @@
       a.download = "eye-of-the-beholder-exposure.png";
       a.click();
     });
+
+    function fullscreenEl() {
+      return document.fullscreenElement || document.webkitFullscreenElement || null;
+    }
+    function syncFullscreenLabel() {
+      $("fullscreenBtn").textContent = fullscreenEl() ? "退出全屏" : "全屏";
+    }
+    $("fullscreenBtn").addEventListener("click", async () => {
+      const root = document.documentElement;
+      $("fullscreenNote").textContent = "";
+      try {
+        if (fullscreenEl()) {
+          if (document.exitFullscreen) await document.exitFullscreen();
+          else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        } else if (root.requestFullscreen) {
+          await root.requestFullscreen({ navigationUI: "hide" });
+        } else if (root.webkitRequestFullscreen) {
+          root.webkitRequestFullscreen();
+        } else {
+          $("fullscreenNote").textContent = "这台浏览器不支持全屏，请换 Chrome 打开。";
+        }
+      } catch (err) {
+        $("fullscreenNote").textContent = "全屏被挡住了。请用 Chrome 打开这个网址后再点一次。";
+      }
+      syncFullscreenLabel();
+    });
+    document.addEventListener("fullscreenchange", syncFullscreenLabel);
+    document.addEventListener("webkitfullscreenchange", syncFullscreenLabel);
 
     window.addEventListener("resize", () => {
       const s = readState();
