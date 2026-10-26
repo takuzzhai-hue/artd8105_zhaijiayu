@@ -26,6 +26,34 @@
       display: flex;
       overflow: hidden;
     }
+    body.phone-upload {
+      display: block;
+      overflow: auto;
+      font: 16px/1.45 -apple-system, "PingFang SC", sans-serif;
+    }
+    body.phone-upload #panel,
+    body.phone-upload #stage { display: none; }
+    #phoneUpload { display: none; }
+    body.phone-upload #phoneUpload { display: block; }
+    #phoneUpload {
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
+    #phoneUpload h1 { font-size: 1.15rem; margin: 0 0 8px; }
+    #phoneUpload p { color: var(--muted); font-size: 0.95rem; }
+    #phonePick {
+      display: block;
+      width: 100%;
+      margin: 24px 0 12px;
+      padding: 22px 16px;
+      font: inherit;
+      font-size: 1.05rem;
+      color: #0c0c0c;
+      background: #e8e4d8;
+      border: 0;
+      min-height: 52px;
+    }
     #panel {
       width: var(--panel);
       flex-shrink: 0;
@@ -158,9 +186,21 @@
       border: 1px solid var(--line);
     }
     #fileNote { margin: 8px 0 0; }
+    #qrWrap { margin-top: 12px; }
+    #qrcode { width: 180px; height: 180px; margin: 8px 0; background: #fff; padding: 6px; }
+    #qrcode img, #qrcode canvas { display: block; width: 100%; height: auto; }
+    #qrUrl { color: var(--muted); font-size: 10px; word-break: break-all; }
   </style>
 </head>
 <body>
+  <div id="phoneUpload">
+    <h1>把一张照片送到屏幕</h1>
+    <p>用自己的流量即可，不必连展场 Wi-Fi。选相册或现场拍一张。</p>
+    <button type="button" id="phonePick">选择或拍摄照片</button>
+    <input id="phoneFile" type="file" accept="image/*" style="display:none">
+    <p id="phoneStatus"></p>
+  </div>
+
   <aside id="panel">
     <h1>Eye of the Beholder<br>Exposure System</h1>
     <p class="sub">Schroeder &amp; Hanauer, 1968 — SC 4020 simulated exposure. Tone is not gray: it is how many times a character is flashed.</p>
@@ -169,6 +209,12 @@
       <input id="file" type="file" accept="image/*">
     </label>
     <p class="sub" id="fileNote">原作裁的是眼睛局部。请把瞳孔放进下面的方框里；室内照片请打开对比度拉伸。</p>
+    <div id="qrWrap">
+      <p class="sub" style="margin:8px 0 0">扫码上传：观众用自己的流量即可，不必连同一个 Wi-Fi。鸿蒙屏幕需要能上网。</p>
+      <div id="qrcode"></div>
+      <p id="qrUrl"></p>
+      <p class="sub" id="qrStatus"></p>
+    </div>
     <canvas id="preview" width="288" height="144"></canvas>
 
     <label>Zoom <span class="val" id="zoomOut"></span>
@@ -276,6 +322,65 @@
   </div>
 
   <script>
+    // Same file, two modes:
+    //   tablet / display → full exposure system
+    //   ?upload=1&topic=… → phone send-a-photo page (must be opened from the public GitHub URL)
+    const PAGE_QUERY = new URLSearchParams(location.search);
+    const IS_PHONE_UPLOAD = PAGE_QUERY.get("upload") === "1";
+    const PUBLIC_PAGE = "https://raw.githack.com/takuzzhai-hue/artd8105_zhaijiayu/main/my_work/tools/eye-of-the-beholder/index.html";
+
+    if (IS_PHONE_UPLOAD) {
+      document.body.classList.add("phone-upload");
+      const topic = PAGE_QUERY.get("topic") || "";
+      const pick = document.getElementById("phonePick");
+      const fileInput = document.getElementById("phoneFile");
+      const status = document.getElementById("phoneStatus");
+      const setStatus = (msg) => { status.textContent = msg; };
+      if (!topic) {
+        pick.disabled = true;
+        setStatus("缺少屏幕编号。请重新扫描屏幕上的二维码。");
+      }
+      pick.addEventListener("click", () => fileInput.click());
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files && fileInput.files[0];
+        if (file) sendPhonePhoto(file, topic, setStatus, pick, fileInput);
+      });
+    }
+
+    async function sendPhonePhoto(file, topic, setStatus, pick, fileInput) {
+      setStatus("正在送出…");
+      pick.disabled = true;
+      try {
+        const bmp = await createImageBitmap(file);
+        const maxEdge = 1600;
+        const scale = Math.min(1, maxEdge / Math.max(bmp.width, bmp.height));
+        const w = Math.max(1, Math.round(bmp.width * scale));
+        const h = Math.max(1, Math.round(bmp.height * scale));
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext("2d").drawImage(bmp, 0, 0, w, h);
+        if (bmp.close) bmp.close();
+        const blob = await new Promise((resolve, reject) => {
+          canvas.toBlob((b) => b ? resolve(b) : reject(new Error("encode")), "image/jpeg", 0.86);
+        });
+        const res = await fetch("https://ntfy.sh/" + encodeURIComponent(topic), {
+          method: "PUT",
+          headers: { Filename: "photo.jpg", "Content-Type": "image/jpeg", Title: "eotb" },
+          body: blob,
+        });
+        if (!res.ok) throw new Error("http " + res.status);
+        setStatus("已送到屏幕。可以再选一张。");
+      } catch (err) {
+        setStatus("没有送出。请确认手机能上网（流量即可）。");
+      }
+      pick.disabled = false;
+      fileInput.value = "";
+    }
+
+    if (IS_PHONE_UPLOAD) {
+      // Do not start the plotter on the visitor's phone.
+    } else {
     // ─── Eye of the Beholder — Exposure System ─────────────────────────────
     // Recreates the 1968 Schroeder / Hanauer pipeline:
     //   sample a photo on an N×N grid → drop looping text into each cell →
@@ -859,24 +964,94 @@
       } catch (err) {
         // fall through to Image()
       }
-      const url = URL.createObjectURL(file);
+      await new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          ingestImage(img);
+          URL.revokeObjectURL(url);
+          resolve();
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          alert("这张图浏览器读不了。请先导出成 JPG 或 PNG 再上传（iPhone 的 HEIC 有时不行）。");
+          reject(new Error("image load failed"));
+        };
+        img.src = url;
+      });
+    }
+
+    ui.file.addEventListener("change", async () => {
+      const file = ui.file.files && ui.file.files[0];
+      if (!file) return;
+      await loadUserFile(file);
+    });
+
+    // Internet relay (ntfy.sh): phones on cellular, Harmony screen on venue Wi-Fi.
+    // The upload page must be a public URL so the QR can open on any network.
+    const UPLOAD_PAGE = PUBLIC_PAGE;
+
+    function roomTopic() {
+      const key = "eotb_ntfy_topic";
+      let topic = localStorage.getItem(key);
+      if (!topic) {
+        const bytes = new Uint8Array(5);
+        crypto.getRandomValues(bytes);
+        topic = "eotb" + Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+        localStorage.setItem(key, topic);
+      }
+      return topic;
+    }
+
+    function ingestFromBlob(blob) {
+      const url = URL.createObjectURL(blob);
       const img = new Image();
       img.onload = () => {
         ingestImage(img);
         URL.revokeObjectURL(url);
       };
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        alert("这张图浏览器读不了。请先导出成 JPG 或 PNG 再上传（iPhone 的 HEIC 有时不行）。");
-      };
+      img.onerror = () => URL.revokeObjectURL(url);
       img.src = url;
     }
 
-    ui.file.addEventListener("change", () => {
-      const file = ui.file.files && ui.file.files[0];
-      if (!file) return;
-      loadUserFile(file);
-    });
+    async function ingestFromNtfyMessage(msg) {
+      const url = msg && msg.attachment && msg.attachment.url;
+      if (!url) return;
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error("image fetch");
+      ingestFromBlob(await res.blob());
+      $("qrStatus").textContent = "已收到一张扫码照片";
+    }
+
+    function initScanUpload() {
+      const topic = roomTopic();
+      const uploadUrl = UPLOAD_PAGE + "?upload=1&topic=" + encodeURIComponent(topic);
+      const box = $("qrcode");
+      $("qrUrl").textContent = uploadUrl;
+      $("qrStatus").textContent = "等待扫码…";
+
+      const qrImg = document.createElement("img");
+      qrImg.width = 168;
+      qrImg.height = 168;
+      qrImg.alt = "upload QR";
+      qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=168x168&margin=8&data="
+        + encodeURIComponent(uploadUrl);
+      box.innerHTML = "";
+      box.appendChild(qrImg);
+
+      const sse = new EventSource("https://ntfy.sh/" + encodeURIComponent(topic) + "/sse");
+      sse.onmessage = (ev) => {
+        try {
+          ingestFromNtfyMessage(JSON.parse(ev.data));
+        } catch (err) {
+          $("qrStatus").textContent = "收到照片但打不开";
+        }
+      };
+      sse.onerror = () => {
+        $("qrStatus").textContent = "屏幕需要能上网才会收到扫码照片";
+      };
+    }
+    initScanUpload();
 
     document.querySelectorAll("[data-preset]").forEach((btn) => {
       btn.addEventListener("click", () => applyPreset(btn.getAttribute("data-preset")));
@@ -898,6 +1073,7 @@
     // Placeholder so the system runs before any upload.
     const placeholder = makePlaceholder();
     placeholder.onload = () => ingestImage(placeholder);
+    } // end display mode
   </script>
 </body>
 </html>
