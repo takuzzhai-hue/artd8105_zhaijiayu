@@ -73,7 +73,7 @@ This virtuality inspires the work, but it is not identical to intermediate ISP d
 In a text on 'Plastic Poetry' published in VOU in 1966, Kitasono Katue proposed composing poetry with cameras and images, without reliance on conventional lines of verse. In this sense, 'photographic poetry' is not merely a lyrical text accompanying a photograph: images, selection, sequence, editing, damage, intervals, and material form can themselves produce poetry (Kitasono 1966; Mayer 1971).
 
 
-Contemporary photography has likewise transformed 'incompleteness' into form. Andreas Müller-Pohle's Digital Scores (1995--1998) transcribes an early photograph into digital codes not directly legible to the human eye, making information itself a problem of viewing. Daido Moriyama and the vocabulary of are, bure, boke (graininess, movement, and defocus) show that grain and blur need not remain defects to be removed. Thomas Ruff's jpegs makes compression, pixel structure, and their visible traces part of the work's organization. These are not technical experiments in camera ISP, but they suggest how imperfections of a medium may become an aesthetic vocabulary.
+Contemporary photography has likewise transformed 'incompleteness' into form. Andreas Müller-Pohle's Digital Scores (1995--1998) transcribes an early photograph into digital codes not directly legible to the human eye, making information itself a problem of viewing. Daido Moriyama is associated with the Provoke circle's vocabulary of are, bure, boke, graininess, movement, and defocus, in which grain and blur need not remain defects to be removed (Wholey 2013). Thomas Ruff's jpegs makes compression, pixel structure, and their visible traces part of the work's organization. These are not technical experiments in camera ISP, but they suggest how imperfections of a medium may become an aesthetic vocabulary.
 
 
 Another thread involves disappearance and manual intervention. In Punched Out Stars (2011), Aspen Mays physically perforated photographs to remove stars; in Reconstruction of a Family (2016), Lebohang Kganye uses family photographs to produce silhouettes and scenes in which absence acquires a new material form. In this work, whitening, silhouette, overlay, slicing, and seams cannot be mere entries in an 'effects library': they should respond to what is seen, forgotten, touched, or left uncertain in the narrative.
@@ -219,6 +219,12 @@ The forest narrative reads: 'I cannot quite remember how the space looked then. 
 
 \FloatBarrier
 
+\section{Implementation}
+
+The RAW path develops a file once and then continues from the previous image. That first step uses rawpy with the camera white balance, linear gamma, and 16-bit output, and it saves the frame before any later change. Each following step is an item in a list: a source phrase, an operation name, parameters, and a region. A region is a saved mask. This path does not call a generative model. A separate web process can propose operations from the written recollection. A constrained addition runs only when the wording asks for something the frame does not contain.
+
+The plates in this paper are those saved stages and the vertical-strip composites. Exposure, blur, vignetting, whitening, and the forest seams are operations on the preceding image. One forest run stored six stages: exposure $-$0.25 stops, saturation 0.13, local exposure, local contrast, and local sharpening on the foreground branches, then local blur on the background. Its log states that these steps were applied to a reduced 8-bit preview and are not a full-size RAW finish. A JPEG or PNG input is display-image processing. It is not a sensor measurement.
+
 \section{Discussion: How Incompleteness Becomes Poetic}
 
 Alternative RAW renderings, concealment and defocus in artistic processing, and generative additions have different relations to photographic evidence: respectively, they are constrained by captured data, rework the viewing relation within an existing image, or create content absent at capture. Within one system, the same recollection might suggest whitening, a silhouette, or seamless removal. Poetry lies not in an individual algorithm but in choosing a relation between the visible and the invisible.
@@ -242,6 +248,18 @@ Rather than finding the one image closest to the past, the work allows the origi
 
 
 In this sense, the work orchestrates technical possibilities of camera imaging with human artistic interventions in photography. Through recollection, states normally corrected, hidden, or discarded re-enter the field of viewing, allowing photographic unfinishedness to become poetic expression. Bringing these changes from different sources into one production chain, it uses the intermediate states of the photographic medium to articulate recollection poetically, while leaving unresolved boundaries open for discussion.
+
+
+\section*{Why It Matters}
+
+Photographs usually appear as finished outputs, concealing the computational choices through which they become visible. This work turns those choices into artistic material and connects them to personal recollection. By distinguishing RAW-derived renderings, non-generative interventions, and labeled additions, it keeps the provenance of a change inside the image.
+
+
+\section*{AI Use Disclosure}
+
+The artwork uses Qwen Plus to map a recollection onto an operation inside a fixed catalogue, Qwen3-VL-Plus to inspect the photograph and a proposed addition, and Qwen Image 2.0 Pro only when an addition or an extension is authorized. SAM 2.1 Hiera Tiny estimates masks on the local machine. Depth Anything V2 Small estimates relative depth for synthetic defocus. RAW decoding uses rawpy. Compositing uses NumPy, OpenCV, and Pillow, which do not generate scene content. A generated region is conjecture, not a recovered exposure.
+
+Cursor and Codex assisted with implementation and debugging. ChatGPT assisted with English wording and a first check of references. The author checked the sources listed below, chose the operations, and selected the figures. The model names above are the configured defaults. Where a run has a log, that log names what was used. This disclosure does not claim that every plate contains generated imagery. The Art Papers page does not set out its own disclosure form. The note is here so the manuscript states the tools that were used.
 
 
 \begin{thebibliography}{99}
@@ -273,6 +291,8 @@ In this sense, the work orchestrates technical possibilities of camera imaging w
 \bibitem[rawpy(n.d.)]{ref78} rawpy. (n.d.). RawPy and Params API documentation [Online software documentation, accessed 24 November 2026]. \url{https://letmaik.github.io/rawpy/api/rawpy.RawPy.html} ; \url{https://letmaik.github.io/rawpy/api/rawpy.Params.html}
 
 \bibitem[Ruff(2004--2007)]{ref79} Ruff, T. (2004--2007). jpegs [Photographic series]. Museum of Modern Art collection record. \url{https://www.moma.org/collection/works/149384}
+
+\bibitem[Wholey(2013)]{ref82} Wholey, M. (2013, January 25). For the sake of thought: Provoke, 1968--1970. \textit{MoMA Inside/Out}. \url{https://www.moma.org/explore/inside_out/2013/01/25/for-the-sake-of-thought-provoke-1968-1970/}
 
 \bibitem[Wade et al.(2002)]{ref80} Wade, K. A., Garry, M., Read, J. D., \& Lindsay, D. S. (2002). A picture is worth a thousand lies: Using false photographs to create false childhood memories. Psychonomic Bulletin \& Review, 9(3), 597--603. \url{https://doi.org/10.3758/BF03196318}
 
