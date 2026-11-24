@@ -16,7 +16,7 @@ Written 24 November 2026 from the session files already in this directory. The s
 - November work is a different log, in `my_work/_research_log/`. It has its own DEC-001 through DEC-006, one reconstructed session file dated 24 November 2026, and `weekly/WK-12_summary.md` through `WK-14_summary.md`. Those DEC numbers are not a continuation of DEC-003 in this folder.
 - Exchanges with no disposition: 1 of 7 on 26 August, 2 of 3 on 30 August. That is above a fifth of the exchanges in those two files.
 - `reconstructed: true` on the session lines: none. The two weekly summaries are late tallies of existing lines. They are marked as written on 24 November 2026 in the files themselves.
-- Gap longer than seven days: 31 August to 20 October, and 22 October to 11 November.
+- Gap longer than seven days: 31 August to 20 October, and 22 October to 11 November. The statement of that gap is `_research_log/no_session_record.md`. It adds no exchanges.
 
 ## Not claimed
 

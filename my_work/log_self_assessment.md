@@ -8,7 +8,7 @@
 
 ## Coverage
 
-The August log covers the twisted-cloth instruction, the rejection of a point waist, and the rejection of version 4. The 21 October log covers the choice to write the claim on *A Photograph of Coexisting Memories* rather than on the earlier class output. The November journal covers the effects vocabulary, the split between RAW-derived rendering, non-generative editing, and generated additions, the strip composite, and the four cases. No session file exists from 2 September through 20 October, or from 22 October through 11 November. Offline work, failed runs, prompts, and masks in those weeks are not in the log.
+The August log covers the twisted-cloth instruction, the rejection of a point waist, and the rejection of version 4. The 21 October log covers the choice to write the claim on *A Photograph of Coexisting Memories* rather than on the earlier class output. The November journal covers the effects vocabulary, the split between RAW-derived rendering, non-generative editing, and generated additions, the strip composite, and the four cases. No session file exists from 2 September through 20 October, or from 22 October through 11 November. That gap is stated in `_research_log/no_session_record.md` and is not filled with exchanges. Offline work, failed runs, prompts, and masks in those weeks are not in the log.
 
 ## Decisions recorded
 
