@@ -1,6 +1,12 @@
 # Literature verification
 
-Raw report pasted 13 October 2026. The student had not named the tool. Every citation below is **UNVERIFIED** until the student opens it. The gap sentence is not written yet; the one inside the report belongs to the tool and is provisional.
+Checked 24 November 2026. The October report is kept below as a record of what the tool claimed. Its citations were opened on that date. Bibliographic identity is what was checked. The tool's readings of those works were not re-argued.
+
+## Gap sentence
+
+The 14 October question was left blank because the two-print project and the tool's sentence did not match, and that project was not the one submitted.
+
+The gap of the submitted paper, *Re-developing Memory*, is this: a photograph is usually delivered as one finished image, so the choices inside its imaging pipeline stay hidden; the paper asks how a written recollection can return those choices to view, as RAW re-development, non-generative operations, and labeled generation, in successive stages of the same photograph, without claiming that the result recovers the past.
 
 14 October 2026, student's pick of the closest work, from the unverified report: first Tabellion et al. 2023, then changed to Marey's chronophotography.
 
@@ -62,31 +68,31 @@ C. Contemporary photographic theory
 
 The report says these are context, not evidence that anyone made this exact pair.
 
-Verified bibliography — as labeled by the tool; still UNVERIFIED here until opened:
+Bibliography opened 24 November 2026. "Opened" means the title, authors, year, and venue were found on a publisher, DOI, museum, or artist page. It does not mean every claim in the October report was accepted.
 
-| Authors · Year | Publication / venue | Tool's source note |
+| Authors · Year | Publication / venue | Opened |
 |---|---|---|
-| Aseem Agarwala, Mira Dontcheva, Maneesh Agrawala, Steven Drucker, Alex Colburn, Brian Curless, David Salesin, Michael Cohen · 2004 | Interactive Digital Photomontage. ACM Transactions on Graphics, 23(3), 294–302. SIGGRAPH 2004. | DOI / Microsoft Research |
-| William T. Freeman, Hao Zhang · 2003 | Shape-Time Photography. IEEE CVPR. | DOI |
-| Markus Höferlin, Kuno Kurzhals, Benjamin Höferlin, Gunther Heidemann, Daniel Weiskopf · 2012 | Evaluation of Fast-Forward Video Visualization. IEEE TVCG, 18(12), 2095–2103. | DOI |
-| Amir H. Meghdadi, Pourang Irani · 2013 | Interactive Exploration of Surveillance Video through Action Shot Summarization and Trajectory Visualization. IEEE TVCG, 19(12), 2119–2128. | DOI |
-| Eric Tabellion, Nikhil Karnad, Noa Glaser, Ben Weiss, David E. Jacobs, Yael Pritch · 2023 | Computational Long Exposure Mobile Photography. ACM Transactions on Graphics, 42(4), Article 48. SIGGRAPH 2023. | DOI / motion-mode.github.io |
-| Vijay Rengarajan, Shuo Zhao, Ruiwen Zhen, John Glotzbach, Hamid Sheikh, Aswin C. Sankaranarayanan · 2020 | Photosequencing of Motion Blur Using Short and Long Exposures. IEEE/CVF CVPR Workshops. Preprint dated 2019. | DOI |
-| Jinwei Gu, Yasunobu Hitomi, Tomoo Mitsunaga, Shree K. Nayar · 2010 | Coded Rolling Shutter Photography: Flexible Space-Time Sampling. IEEE ICCP. | DOI |
-| Johannes Eschner, Peter Mindek, Manuela Waldner · 2023 | Illustrative Motion Smoothing for Attention Guidance in Dynamic Visualizations. Computer Graphics Forum, 42(3), 361–372. | DOI |
-| Daniel Rubinstein, Katrina Sluis · 2008 | A Life More Photographic. photographies, 1(1), 9–28. | DOI |
-| David Campany · 2008 | Photography and Cinema. London: Reaktion Books. | Author / publisher |
-| Joanna Zylinska · 2017 | Nonhuman Photography. Cambridge, MA: MIT Press. | Publisher |
+| Aseem Agarwala et al. · 2004 | Interactive Digital Photomontage. ACM Transactions on Graphics, 23(3), 294–302. | https://doi.org/10.1145/1015706.1015718 |
+| William T. Freeman, Hao Zhang · 2003 | Shape-Time Photography. IEEE CVPR. | https://doi.org/10.1109/CVPR.2003.1211465 |
+| Markus Höferlin et al. · 2012 | Evaluation of Fast-Forward Video Visualization. IEEE TVCG, 18(12), 2095–2103. | https://doi.org/10.1109/TVCG.2012.222 |
+| Amir H. Meghdadi, Pourang Irani · 2013 | Interactive Exploration of Surveillance Video through Action Shot Summarization and Trajectory Visualization. IEEE TVCG, 19(12), 2119–2128. | https://doi.org/10.1109/TVCG.2013.168 |
+| Eric Tabellion et al. · 2023 | Computational Long Exposure Mobile Photography. ACM Transactions on Graphics, 42(4), Article 48. | https://doi.org/10.1145/3592124 |
+| Vijay Rengarajan et al. · 2020 | Photosequencing of Motion Blur Using Short and Long Exposures. CVPR Workshops. The report's "preprint dated 2019" was not a separate publication on the pages opened. | https://doi.org/10.1109/CVPRW50498.2020.00263 |
+| Jinwei Gu et al. · 2010 | Coded Rolling Shutter Photography: Flexible Space-Time Sampling. IEEE ICCP. The abstract says the demonstrations are simulations and a prototype chip was in development. Later abandonment was not established. | https://doi.org/10.1109/ICCPHOT.2010.5585094 |
+| Johannes Eschner, Peter Mindek, Manuela Waldner · 2023 | Illustrative Motion Smoothing for Attention Guidance in Dynamic Visualizations. Computer Graphics Forum, 42(3). | https://doi.org/10.1111/cgf.14836 |
+| Daniel Rubinstein, Katrina Sluis · 2008 | A Life More Photographic. photographies. | https://doi.org/10.1080/17540760701785842 |
+| David Campany · 2008 | Photography and Cinema. Reaktion Books. ISBN 9781861893512. | https://davidcampany.com/photography-and-cinema/ |
+| Joanna Zylinska · 2017 | Nonhuman Photography. Cambridge, MA: MIT Press. | http://www.joannazylinska.net/publications/ |
 
 Artworks named by the tool:
 
-| Artist · Date | Work / venue | Tool's link note |
+| Artist · Date | Work / venue | Opened |
 |---|---|---|
-| Étienne-Jules Marey and Charles Fremont · 1894 | Chronophotograph. Gelatin silver print. The Metropolitan Museum of Art. | Museum collection |
-| Eadweard Muybridge · 1887 | Animal Locomotion. University of Pennsylvania. | Library of Congress |
-| Hiroshi Sugimoto · 1976–present | Theaters. Fraenkel Gallery. | Series |
-| Michael Wesely · 2001–2004 | 7 August 2001–7 June 2004 The Museum of Modern Art, New York. MoMA. | Museum collection |
-| Pelle Cass · 2008 onward | Selected People; The Fence / Photoville, 2013. | Exhibition and artist statement |
+| Étienne-Jules Marey and Charles Fremont · 1894 | Chronophotograph. Gelatin silver print. The Metropolitan Museum of Art, 1987.1054. | https://www.metmuseum.org/art/collection/search/265094 |
+| Eadweard Muybridge · 1887 | Animal Locomotion. MoMA holds plates from the 1887 publication. The Library of Congress item opened the same day is the 1878 horse-in-motion cards, not the 1887 book. | https://www.moma.org/collection/works/48458 |
+| Hiroshi Sugimoto · 1976 onward | Theaters. Fraenkel Gallery. The page describes an exposure lasting a whole film and a white screen. U.A. Fox, New York, is dated 1976 on that page. | https://fraenkelgallery.com/artists/hiroshi-sugimoto |
+| Michael Wesely · 2001–2004 | 7 August 2001–7 June 2004, The Museum of Modern Art, New York. MoMA, chromogenic print. | https://www.moma.org/collection/works/98511 |
+| Pelle Cass · 2008 onward | Selected People. The artist says the pictures keep selected figures from many exposures and change nothing else. The Fence 2013 page documents Selected People: Streets. | https://pellecass.com/about-selected-people |
 
 The tool also flags Freeman and Zhang, Shape-Time Photography (CVPR 2003): photographs from different moments using depth and occlusion.
 
@@ -97,7 +103,7 @@ The tool distinguishes a documented limitation from a failed or abandoned projec
 - Höferlin et al. (2012): tested frame skipping, temporal blending, object trails, and predictive trajectories with 24 participants. The tool says the assumption that these occupy opposite ends of a trade-off was complicated by the results.
 - Eschner et al. (2023): limits to the benefits of adding motion trails.
 - Rengarajan et al. (2020): temporal order is hard to recover from a blurred photograph alone; their method adds two short exposures.
-- Gu et al. (2010): readout schemes shown in simulation; a programmable sensor was still in development. The tool marks as UNVERIFIED whether the project was later abandoned.
+- Gu et al. (2010): readout schemes shown in simulation; a programmable sensor was still in development. The tool did not establish whether the project was later abandoned. The 24 November check of the abstract confirms the demonstrations were simulations and that a prototype chip was then in development. It does not say the project was abandoned.
 
 The tool says it found no reliable source that artists or researchers abandoned placing an integral and a sampled representation of one interval side by side. It says digital photomontage, stroboscopic compositing, synthetic long exposure, and action-shot summaries already exist as methods.
 
@@ -115,7 +121,7 @@ Sugimoto is discussed and left out of this five. The tool says he shows a durati
 
 ### 4. The tool's gap — not the student's
 
-The tool's claim table, in brief: a photograph having no place for time is not literally defensible; white traces are not novel and not automatic; sampling preserving bodies but losing intervals is only partly defensible; the complementary-loss description may fit these two outputs but is not a general law; "where delay sits determines the type" is technically contradicted as a binary; the two prints as a designed comparison is potentially defensible, and the novelty of this exact pairing is marked UNVERIFIED.
+The tool's claim table, in brief: a photograph having no place for time is not literally defensible; white traces are not novel and not automatic; sampling preserving bodies but losing intervals is only partly defensible; the complementary-loss description may fit these two outputs but is not a general law; "where delay sits determines the type" is technically contradicted as a binary; the two prints as a designed comparison is potentially defensible, and the tool had not shown that this exact pairing already existed.
 
 The tool splits "delay" into three quantities: exposure duration τ, sampling interval Δt, and processing latency δ. It says the photographs manipulate τ and Δt, or simulate them, and do not demonstrate that δ determines the visual form.
 
