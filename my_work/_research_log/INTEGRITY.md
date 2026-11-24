@@ -19,7 +19,7 @@ Regenerated 24 November 2026 while reformatting `journals/02_Research_Log_and_We
 
 ## Separate from this folder
 
-The course repository `artd8105_zhaijiayu` has another log at `_research_log/`, not in this submission folder: session files `2026-08-26_1250.jsonl`, `2026-08-30_1048.jsonl`, and `2026-10-21_1217.jsonl`, plus DEC-001, DEC-002, and DEC-003. Those DEC numbers are a different series about the early instruction exercise. They were not copied here and are not counted above. There is no `weekly/` directory and no `INTEGRITY.md` in that repository log.
+The course repository has another log at `_research_log/`: session files `2026-08-26_1250.jsonl`, `2026-08-30_1048.jsonl`, and `2026-10-21_1217.jsonl`, plus DEC-001, DEC-002, and DEC-003. Those DEC numbers are a different series about the early instruction exercise. They were not copied here and are not counted above. On 24 November 2026 that directory gained `weekly/WK-01_summary.md`, `weekly/WK-09_summary.md`, and `INTEGRITY.md`, tallied from those existing session files. The weeks with no session file are still empty.
 
 ## Not claimed
 
