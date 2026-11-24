@@ -1,0 +1,56 @@
+{
+  "regions": {
+    "最前面的倒伏针叶树枝（用户所指焦点对象）": "region_01_mask.png",
+    "背景林木与草地（用户所述‘后面一片模糊’区域）": "region_02_mask.png"
+  },
+  "operations": [
+    {
+      "source": "整个森林会更按一点",
+      "name": "exposure",
+      "parameters": {
+        "stops": -0.25
+      },
+      "region": null
+    },
+    {
+      "source": "绿色会更加浓郁",
+      "name": "saturation",
+      "parameters": {
+        "amount": 0.13
+      },
+      "region": null
+    },
+    {
+      "source": "当时我关注的焦点在最前面的树上",
+      "name": "local_exposure",
+      "parameters": {
+        "stops": 0.22
+      },
+      "region": "最前面的倒伏针叶树枝（用户所指焦点对象）"
+    },
+    {
+      "source": "当时我关注的焦点在最前面的树上",
+      "name": "local_contrast",
+      "parameters": {
+        "amount": 0.23
+      },
+      "region": "最前面的倒伏针叶树枝（用户所指焦点对象）"
+    },
+    {
+      "source": "当时我关注的焦点在最前面的树上",
+      "name": "local_sharpen",
+      "parameters": {
+        "amount": 0.16
+      },
+      "region": "最前面的倒伏针叶树枝（用户所指焦点对象）"
+    },
+    {
+      "source": "后面一片模糊",
+      "name": "local_blur",
+      "parameters": {
+        "amount": 0.08
+      },
+      "region": "背景林木与草地（用户所述‘后面一片模糊’区域）"
+    }
+  ]
+}

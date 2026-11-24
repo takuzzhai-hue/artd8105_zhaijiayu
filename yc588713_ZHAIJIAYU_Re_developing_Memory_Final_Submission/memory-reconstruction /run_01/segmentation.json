@@ -1,0 +1,36 @@
+[
+  {
+    "name": "最前面的倒伏针叶树枝（用户所指焦点对象）",
+    "box": [
+      0.0,
+      0.15,
+      1.0,
+      1.0
+    ],
+    "model": "facebook/sam2.1-hiera-tiny",
+    "revision": "de431c4043854a71d8101e17995dfe596bf101a5",
+    "method": "object",
+    "status": "success",
+    "score": 0.9352504014968872,
+    "area_pixels": 1287844,
+    "mask_file": "region_01_mask.png",
+    "overlay_file": "region_01_overlay.png"
+  },
+  {
+    "name": "背景林木与草地（用户所述‘后面一片模糊’区域）",
+    "box": [
+      0.4,
+      0.0,
+      1.0,
+      0.4
+    ],
+    "model": "facebook/sam2.1-hiera-tiny",
+    "revision": "de431c4043854a71d8101e17995dfe596bf101a5",
+    "method": "object",
+    "status": "success",
+    "score": 0.9188594818115234,
+    "area_pixels": 297940,
+    "mask_file": "region_02_mask.png",
+    "overlay_file": "region_02_overlay.png"
+  }
+]

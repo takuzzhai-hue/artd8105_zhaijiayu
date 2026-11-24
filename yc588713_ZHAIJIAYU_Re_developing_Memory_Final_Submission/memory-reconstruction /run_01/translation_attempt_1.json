@@ -1,0 +1,78 @@
+{
+  "sentences": [
+    {
+      "source": "整个森林会更按一点",
+      "intent": "全局轻微压暗以增强幽深感",
+      "status": "proposed",
+      "reason": "‘更按一点’为口语化错字，结合语境与照片日间散射光、明暗柔和的现状，推测意为‘更暗一点’；符合明暗变化保持轻微原则，仅需一次全局曝光微调，避免叠加暗角或抬黑等冗余操作。",
+      "operations": [
+        {
+          "name": "exposure",
+          "parameters": {
+            "stops": -0.25
+          },
+          "region": null
+        }
+      ]
+    },
+    {
+      "source": "绿色会更加浓郁",
+      "intent": "全局提升绿色饱和度，强化森林主色调",
+      "status": "proposed",
+      "reason": "原图绿色已鲜明（深绿/墨绿为主，饱和度中等偏高），‘更加浓郁’属温和强化意图；全局饱和度提升最直接匹配，幅度控制在克制范围内（+0.13），避免过艳失真。",
+      "operations": [
+        {
+          "name": "saturation",
+          "parameters": {
+            "amount": 0.13
+          },
+          "region": null
+        }
+      ]
+    },
+    {
+      "source": "当时我关注的焦点在最前面的树上",
+      "intent": "强化前景倒伏针叶树枝的视觉焦点地位",
+      "status": "proposed",
+      "reason": "照片中无独立直立‘树’，但用户明确指向‘最前面的倒伏针叶树枝’为焦点对象；该区域已成功分割（score=0.935），可局部提亮+微增对比+轻度锐化，模拟人眼聚焦时的感知强化，不改变真实光学焦平面。",
+      "operations": [
+        {
+          "name": "local_exposure",
+          "parameters": {
+            "stops": 0.22
+          },
+          "region": "最前面的倒伏针叶树枝（用户所指焦点对象）"
+        },
+        {
+          "name": "local_contrast",
+          "parameters": {
+            "amount": 0.23
+          },
+          "region": "最前面的倒伏针叶树枝（用户所指焦点对象）"
+        },
+        {
+          "name": "local_sharpen",
+          "parameters": {
+            "amount": 0.18
+          },
+          "region": "最前面的倒伏针叶树枝（用户所指焦点对象）"
+        }
+      ]
+    },
+    {
+      "source": "后面一片模糊",
+      "intent": "强化背景林木与草地的虚化感",
+      "status": "proposed",
+      "reason": "用户强调‘后面一片模糊’是记忆中的主观焦点迁移结果，非图像缺陷；该区域已成功分割（score=0.919），适用 local_blur 柔化以呼应‘模糊’感知，amount=0.72 在合理范围（0–1），不覆盖全图，保留前景清晰锚点。",
+      "operations": [
+        {
+          "name": "local_blur",
+          "parameters": {
+            "amount": 0.72
+          },
+          "region": "背景林木与草地（用户所述‘后面一片模糊’区域）"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "mode": "sequential",
+  "memory": "整个森林会更按一点，绿色会更加浓郁，当时我关注的焦点在最前面的树上，后面一片模糊",
+  "count": 6,
+  "source": "source.jpg",
+  "stages": [
+    {
+      "generated": false,
+      "generated_content": [],
+      "index": 1,
+      "image": "result_01.png",
+      "source_step": "run_01/step_01.png",
+      "source": "整个森林会更按一点",
+      "operation": {
+        "name": "exposure",
+        "parameters": {
+          "stops": -0.25
+        },
+        "region": null
+      },
+      "previous": "original_preview.png",
+      "fallback": false,
+      "reason": "已应用于缩小的 8 位显示预览；不是全尺寸 RAW 成片"
+    },
+    {
+      "generated": false,
+      "generated_content": [],
+      "index": 2,
+      "image": "result_02.png",
+      "source_step": "run_01/step_02.png",
+      "source": "绿色会更加浓郁",
+      "operation": {
+        "name": "saturation",
+        "parameters": {
+          "amount": 0.13
+        },
+        "region": null
+      },
+      "previous": "result_01.png",
+      "fallback": false,
+      "reason": "已应用于缩小的 8 位显示预览；不是全尺寸 RAW 成片"
+    },
+    {
+      "generated": false,
+      "generated_content": [],
+      "index": 3,
+      "image": "result_03.png",
+      "source_step": "run_01/step_03.png",
+      "source": "当时我关注的焦点在最前面的树上",
+      "operation": {
+        "name": "local_exposure",
+        "parameters": {
+          "stops": 0.22
+        },
+        "region": "最前面的倒伏针叶树枝（用户所指焦点对象）"
+      },
+      "previous": "result_02.png",
+      "fallback": false,
+      "reason": "已应用于缩小的 8 位显示预览；不是全尺寸 RAW 成片"
+    },
+    {
+      "generated": false,
+      "generated_content": [],
+      "index": 4,
+      "image": "result_04.png",
+      "source_step": "run_01/step_04.png",
+      "source": "当时我关注的焦点在最前面的树上",
+      "operation": {
+        "name": "local_contrast",
+        "parameters": {
+          "amount": 0.23
+        },
+        "region": "最前面的倒伏针叶树枝（用户所指焦点对象）"
+      },
+      "previous": "result_03.png",
+      "fallback": false,
+      "reason": "已应用于缩小的 8 位显示预览；不是全尺寸 RAW 成片"
+    },
+    {
+      "generated": false,
+      "generated_content": [],
+      "index": 5,
+      "image": "result_05.png",
+      "source_step": "run_01/step_05.png",
+      "source": "当时我关注的焦点在最前面的树上",
+      "operation": {
+        "name": "local_sharpen",
+        "parameters": {
+          "amount": 0.16
+        },
+        "region": "最前面的倒伏针叶树枝（用户所指焦点对象）"
+      },
+      "previous": "result_04.png",
+      "fallback": false,
+      "reason": "已应用于缩小的 8 位显示预览；不是全尺寸 RAW 成片"
+    },
+    {
+      "generated": false,
+      "generated_content": [],
+      "index": 6,
+      "image": "result_06.png",
+      "source_step": "run_01/step_06.png",
+      "source": "后面一片模糊",
+      "operation": {
+        "name": "local_blur",
+        "parameters": {
+          "amount": 0.08
+        },
+        "region": "背景林木与草地（用户所述‘后面一片模糊’区域）"
+      },
+      "previous": "result_05.png",
+      "fallback": false,
+      "reason": "已应用于缩小的 8 位显示预览；不是全尺寸 RAW 成片"
+    }
+  ],
+  "skipped": [],
+  "strips": [
+    {
+      "start": 0,
+      "end": 432,
+      "source": "original.png"
+    },
+    {
+      "start": 432,
+      "end": 864,
+      "source": "result_01.png"
+    },
+    {
+      "start": 864,
+      "end": 1296,
+      "source": "result_02.png"
+    },
+    {
+      "start": 1296,
+      "end": 1728,
+      "source": "result_03.png"
+    },
+    {
+      "start": 1728,
+      "end": 2160,
+      "source": "result_04.png"
+    },
+    {
+      "start": 2160,
+      "end": 2592,
+      "source": "result_05.png"
+    },
+    {
+      "start": 2592,
+      "end": 3024,
+      "source": "result_06.png"
+    }
+  ],
+  "status": "completed",
+  "original_size": [
+    3024,
+    4032
+  ],
+  "ideal_strip_width": 432.0
+}

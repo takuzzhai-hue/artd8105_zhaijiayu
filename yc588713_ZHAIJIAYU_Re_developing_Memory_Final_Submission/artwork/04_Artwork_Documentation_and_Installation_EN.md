@@ -1,70 +1,59 @@
 # Artwork documentation and installation requirements
 
-Re-developing Memory. Artistic prototype and proposed display specifications. Converted from the Word file. The artist line now names Zhai Jiayu (yc588713). The PDF beside this file is older and still has the blank artist line.
+Re-developing Memory. Artist: Zhai Jiayu (yc588713). Documentation updated 24 November 2026 from the files now in this package.
 
 ## 1. Work identification
 
 | Field | Description |
 |---|---|
 | Title | Re-developing Memory |
-| Type | Narrative-driven interactive photographic re-creation prototype; cumulative stage images recombined as a vertical-strip photographic work |
-| Medium | Existing photographs, recollection text, computational image processing, constrained local AI generation, intermediate images, final composites |
-| Documented status | Artist manuscript, prototype claims, and four sets of case-study output supplied; public deployment and actual installation not documented |
+| Type | Narrative-driven photographic reworking; cumulative stages recombined as a vertical-strip test print, shown with the running system |
+| Medium | Photographs, written recollection, RAW and display-image processing, constrained local generation, intermediate images, strip composites |
 | Artist / year | Zhai Jiayu (yc588713); 2026 |
-| Documentation version | 24 November 2026; retrospective record with unverified installation fields |
+| Shown | B15 exhibition record, photographed 18 November 2026. See section 5. |
 
 ## 2. Artistic concept
 
-The work begins with a personal photograph and a written recollection and allows the photograph to enter a process of formation again. Descriptions of brightness, movement, disappearance, touch and uncertain space are translated into visible image operations. The work distinguishes alternative renderings grounded in captured data, non-generative interventions in an existing photograph, and speculative additions where something was never recorded. Stages do not replace each other to reveal one correct image: they remain available and are recombined as aligned vertical strips so a single frame can contain several processing times. The result does not recover an authentic memory; it makes choices, losses, additions and speculation visible as a photographic poem.
+The work begins with a personal photograph and a written recollection and lets the photograph enter a process of formation again. Brightness, movement, disappearance, touch, and uncertain space become visible operations. It distinguishes renderings grounded in captured data, non-generative changes to an existing photograph, and speculative additions where something was never recorded. Stages stay available and are recombined as aligned vertical strips, so one frame can hold several processing times. The result does not recover an authentic memory.
 
-## 3. Interactive and export workflow
+## 3. Executable RAW-reworking workflow
 
-Upload a photograph (RAW, JPEG, or PNG) and enter recollection text. The system analyzes the scene and narrative, plans operations and scope, segments regions where needed, applies successive changes to the preceding stage, saves and shows those stages, takes aligned vertical strips, and exports a final image with whatever process record is available.
+The runnable program is `Memory_Reconstruction_system_20261124/` in this submission folder. Install from its `README.md`. `src/engine.py` develops a RAW file once with rawpy (`use_camera_wb`, linear gamma, 16-bit output) and then applies each JSON operation to the previous image. It writes 16-bit PNG stages and `log.json`. It does not call a generative model. The browser interface is started with `src/app.py` and opens at `http://127.0.0.1:7860/`. Language and generation calls need a DashScope key in a local `.env`. That key is not in the repository.
 
-Provenance classes: R means genuine RAW-derived development; E means a non-generative photographic operation; G means generative supplementation. Whether the running program can export that record directly still has to be confirmed from the repository. The disclosure names the current Qwen services, SAM 2.1 Hiera Tiny, Depth Anything V2 Small, and rawpy/LibRaw. Which model ran on each earlier example still needs the execution record.
+Provenance classes in the program: R is RAW-derived development, E is another non-generative operation, G is generative supplementation. JPEG and PNG inputs are display-image processing, not sensor measurements.
 
-## 4. Case images
+One saved run is `memory-reconstruction /`, logged in `series.json` on 17 November 2026. The recollection asks for a darker, greener forest, sharp foreground branches, and a blurred background. Six stages were saved. The log states that this run used a reduced 8-bit preview and is not a full-size RAW finish. Masks are in `memory-reconstruction /run_01/`. A reduced copy of the log and the composite is in `my_work/prints/`.
 
-**Figure 1. Pendulum: time within an instant.** Original scene, tonal adjustment, blur and vignette stages, and the final strip composite. Reported values: global exposure −0.35 EV; light-ring exposure −0.42 EV; sphere blur amount 0.11 at 0°; vignette amount 0.12.
+## 4. Final test-print series
 
-**Figure 2. Vanishing hand: the shape of forgetting.** Source image versus local whiteout. The white region keeps the space the hand occupied. It does not invisibly rebuild the background.
-
-**Figure 3. Adding an index finger: touch beyond the frame.** Chicago waterfront compared with an image that has a foreground index finger. The added gesture is speculative generation, not evidence from the source photograph.
-
-**Figure 4. Forest: spatial rupture beyond framing.** Forest source, fragmentation stages, and composite. Extension, duplicated fragments, and visible joins show uncertainty. They do not repair the scene seamlessly.
-
-## 5. Installation requirements
-
-This is a proposed checklist. Print size, the actual computer, and any public installation were not measured.
-
-| Element | Known or proposed | Still needs testing |
+| Plate | File | What it shows |
 |---|---|---|
-| Interactive station | A computer and display that can run the project, with a keyboard and mouse or the equivalent | Operating system, browser, GPU and VRAM, model-service limits |
-| Software | The real frontend, backend, and image-processing dependencies | Environment variables, lockfiles, supported RAW formats, startup commands |
-| Connectivity | Needed if remote model or API calls are turned on | Whether it can run offline, and the exact service domains |
-| Visitor workflow | Upload, enter a recollection, see stages, export the composite | File limits, waiting time, errors, and export, tested on site |
-| Static alternative | Show the final strip composite and the stage comparisons | Print medium, mounting, physical size, color management |
-| Sound, projection, sensors | The manuscript does not require them | Add them only if a later version actually uses them |
-| Privacy and rights | A consent notice for personal photographs and memories. Do not show private test data | How long files are kept, deletion, any training use, licenses, and permission to exhibit |
+| Figure 1. Pendulum | `figures/Figure_1.png` and `my_work/paper/figures/figure_01_case.png` | Original, four cumulative stages, strip composite. Exposure −0.35 EV; light-ring exposure −0.42 EV; sphere blur amount 0.11 at 0°; vignette 0.12. |
+| Figure 2. Vanishing hand | `figures/Figure_2.png` and `my_work/paper/figures/figure_02.png` | Source and local whiteout. The white region keeps the space of the hand. |
+| Figure 3. Index finger | `figures/Figure_3.png` and `my_work/paper/figures/figure_03_case.png` | Waterfront source and a generated finger. The finger is conjecture. |
+| Figure 4. Forest | `figures/Figure_4.png` and `my_work/paper/figures/figure_04.png` | Stages and a composite with stretching and hard seams. |
+| Forest test print | `my_work/prints/forest_testprint.jpg` | Composite from the 17 November run. Stages: `forest_step_01.jpg`, `forest_step_06.jpg`. Log: `forest_series.json`. |
 
-## 6. Setup sequence
+## 5. B15 exhibition
 
-Before setup, check the computer and display, use a real project commit, install dependencies, and test the configured models or APIs. Use demonstration images and text that are not private.
+Photographs taken 18 November 2026, 11:54, supplied as the B15 exhibition record:
 
-To launch, follow the project README, open the interface, and test an upload and the stage viewer. Copy the launch commands from the actual codebase.
+- `artwork/exhibition/b15_01.jpg` (from `IMG_1865.HEIC`)
+- `artwork/exhibition/b15_02.jpg` (from `IMG_1866.HEIC`)
+- Copies: `my_work/prints/b15_exhibition_01.jpg` and `b15_exhibition_02.jpg`
 
-To test, reproduce one supplied example: the same input, the same stage order, and the same final composite. If the setup needs the network, also test what happens when a request fails.
+The table holds a poster titled *Redeveloping Memory*, printed pages, and a laptop running the system. The screen shows a forest image. A wall mark near the elevator reads “1 A”. The image files do not print the characters “B15”; they are the installation photographs provided for that exhibition. Neighbouring posters and the white wire sculptures are other displays. Paper size, screen size, and illuminance were not measured.
 
-While it is in use, say clearly that generated additions are not recovered historical evidence. Do not leave a visitor's photograph or recollection on a public computer.
+## 6. What a later installation still needs
 
-Afterwards, keep only the documentation you are allowed to keep, and delete visitor inputs according to the project's real retention rule.
+| Element | In this package | Not measured here |
+|---|---|---|
+| Computer | The laptop in the B15 photographs was running the interface | Operating system, GPU, and VRAM of that machine |
+| Software | Source, `requirements.txt`, `Start_Mac.command`, `Start_Windows.cmd` | A fresh install on another machine, including model download |
+| Network | Required for DashScope calls | Offline behaviour |
+| Prints | The four plates and the forest test print | Paper stock, physical dimensions, colour management |
+| Privacy | Demonstration images are in the run folder | A consent notice is still required before a visitor’s own photograph is uploaded |
 
-## 7. Files in this package
+## 7. Limits
 
-The manuscript source is `paper/Re_developing_Memory_SIGGRAPH_ACM_Review.tex`, with PDFs beside it. Case figures are `figures/Figure_1.png` through `figures/Figure_4.png`.
-
-The program source, dependency locks, RAW files, execution JSON, masks, prompts, per-run model names, a demonstration video, interface screenshots, and installation photos are not in this folder.
-
-## 8. Limits
-
-The work shows more than one visual version of a photograph directed by a written recollection. It does not prove that a personal memory was recovered accurately. RAW stages, ordinary edits, and generated additions need different labels. Blur, whiteout, and broken space should not be described as psychological mechanisms. The display sizes above stay proposals until they are tested in the actual room.
+The work shows more than one visual version of a photograph directed by a written recollection. It does not prove that a personal memory was recovered. The 17 November forest run is a preview log, not a full-size RAW finish. Blur, whiteout, and broken space are pictorial operations, not measurements of psychology.
