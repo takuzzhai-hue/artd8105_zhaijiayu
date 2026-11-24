@@ -1,0 +1,20 @@
+{
+  "rawpy": "0.28.0",
+  "numpy": "2.5.4",
+  "opencv-python": "5.0.0.93",
+  "imageio": "2.38.1",
+  "gradio": "6.31.0",
+  "python-dotenv": "1.2.4",
+  "dashscope": "2.0.4",
+  "requests": "2.34.2",
+  "torch": "2.15.0",
+  "torchvision": "0.29.2",
+  "transformers": "5.22.2",
+  "fastapi": "0.162.2",
+  "uvicorn": "0.54.0",
+  "python-multipart": "0.0.33",
+  "qrcode": "8.2",
+  "pillow-heif": "1.8.1",
+  "Pillow": "12.3.0",
+  "huggingface-hub": "2.4.0"
+}

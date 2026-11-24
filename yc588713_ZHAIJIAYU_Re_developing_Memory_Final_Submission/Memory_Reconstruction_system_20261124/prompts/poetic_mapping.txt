@@ -1,0 +1,15 @@
+诗意摄影映射（优先于普通关键词调色；中文、英文、混合语言按语义理解）：
+这些是本作品的艺术解释，不是艺术家技法的精确复刻，不是恢复记忆。按具体叙述选择一条主表达；不要一段话套遍所有效果，不为了张数追加曝光。source保留原语言原句，reason说明选择与不确定性。
+1. “人不在了，但那个位置还在 / leave a hole where she was”：已有对象且要求柔白消失→local_overexposure；明确剪掉、打孔、挖空→local_cutout amount=1 tone=white，region是实际对象。局部平色空洞不补背景，不声称透明。不能定位时不擅自挖洞。
+2. “记得有人在，却想不起长相 / remember their presence, not their face”→local_silhouette（真实已有对象），不生成新身份。
+3. “只记得握手、拥抱、手臂相缠，其他都淡了 / only remember holding hands”→retain_gesture amount=.65 tone=gray，region是保留的动作部位，绝不是背景。明确白色/黑色遮盖可tone=white/dark，背景仍保留痕迹。只有真实可见动作才执行，不能生成拥抱姿势。
+4. “手摸过，留下痕迹 / a trace of touch”→touch_trace，指向现有区域；未提添加手就不生成手。
+5. “越想记起某处越模糊 / the harder I remember her face, the less clear it gets”→local_defocus_bloom amount=.6，定位想不起的部位；“只记得脸，其余模糊”→depth_focus，定位保留的脸。两者方向相反，不可混用。全局不清晰用global_blur，不全白全黑。
+6. “照片被水泡过、纸面慢慢坏掉 / water-damaged photograph”→paper_decay amount=.45；明确乳剂脱落→emulsion_damage；单纯印象褪色→dye_fading。不是所有悲伤都造成破损。
+7. “记得这些片段，位置却对不上 / fragments in the wrong places”→memory_fragments amount=.55 direction依构图选择，少量宽条机械移位、不生成、不加RGB色散。若已有spatial_plan则空间模块优先，不重复此操作；明确扩展视角才走同一空间生成流程。
+8. “既是过去又是现在 / then and now overlap”→RAW用dual_development；普通照片ghosting amount=.25 angle依构图，注明同一张照片衍生，不默认过去必暖、现在必冷，不凭空补人物。
+9. “熟悉却变陌生、明暗反过来了 / familiar but reversed”→linear_negative/local_linear_negative amount=.65；只有反转语义才选负像，不把所有悲伤映射负像。
+10. “只剩数字、编码、信息 / only numbers and codes remain”→image_codes amount=.7，无需分割。来自当前显示图像采样的真实RGB数值，E类；“最原始传感器采样”仍只对RAW用sensor_sites，不用随机代码或颗粒冒充传感器。
+11. 具体回忆中曾有但照片没有的物品，或明确要求加入物品，只能通过approved_additions中的generate_add计划。普通愿望、隐喻、触感不授权补物。“想喝咖啡”不添加杯子。“我记得桌上有杯咖啡”需要看图确认缺失再补入。
+12. 多位叙述者的不同回忆必须保留各自原文与来源，从同一原图分别处理，不将甲的结果用作乙的起点，不把矛盾说法自动合成一种真相。网页输入可用独立行【叙述者：名字】区分，每人一段；外层负责分别制作与并置，普通单段仍走累计修改。
+所有局部操作必须使用有效分割。整张照片保持可辨细节，局部空白可存在。诗意不是放宽新增物体授权；禁止自动补全故事、捏造身份或添加未提到的象征道具。

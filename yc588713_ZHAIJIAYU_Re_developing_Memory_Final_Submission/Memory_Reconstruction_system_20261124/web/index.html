@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark"><meta name="theme-color" content="#000000">
+<title>Memory / Reconstruction</title>
+<link rel="stylesheet" href="/static/style.css?v=phone-20261116-3">
+<script type="module" src="/static/app.js?v=phone-20261116-3"></script>
+</head>
+<body>
+<header class="masthead"><a href="#input" id="home" aria-label="回到输入页面">MEMORY <span>/</span> RECONSTRUCTION</a><span id="page-number">01 <span>/</span> INPUT</span></header>
+<main>
+<section id="input-page" class="page" aria-label="照片与回忆">
+<form id="memory-form" novalidate>
+<div class="editorial-row photo-row"><div class="margin-note">01 <span>PHOTOGRAPH</span></div>
+<div class="content-column photo-with-phone"><div class="desktop-photo">
+<input id="photo-file" type="file" class="visually-hidden" tabindex="-1" accept=".jpg,.jpeg,.png,.webp,.tif,.tiff,.raw,.raf,.cr2,.cr3,.crw,.nef,.nrw,.arw,.srf,.sr2,.dng,.rw2,.orf,.pef,.srw,.3fr,.fff,.iiq,.kdc,.mos,.mrw">
+<button type="button" id="upload-area" class="upload-area" aria-label="上传照片，支持点击或拖放">
+<span id="upload-prompt">上传照片</span>
+<img id="upload-preview" alt="上传照片预览" hidden>
+</button>
+<div class="photo-caption"><span id="upload-caption">RAW / JPEG / PNG / WEBP / TIFF</span><button type="button" id="replace-photo" class="quiet-button" hidden>更换照片</button></div>
+<p id="upload-error" class="error" role="alert" hidden></p></div>
+<aside class="phone-pair"><button type="button" id="phone-refresh" class="qr-button" aria-label="刷新手机上传二维码"><img id="phone-qr" alt="手机上传配对二维码" hidden></button><p id="phone-status" role="status" hidden></p></aside>
+</div></div>
+<div class="editorial-row memory-row"><label class="margin-note" for="memory">02 <span>MEMORY</span></label>
+<div class="content-column"><textarea id="memory" name="memory" rows="5" maxlength="10000" aria-label="关于拍摄时刻的回忆" placeholder="请你回忆拍摄这张照片的时候&#10;&#10;我感觉整体应该更暗一些&#10;我当时的注意力在背后的东西上&#10;记忆好像缺失了一块"></textarea><details class="memory-help"><summary>不同人的回忆</summary><p>同一张照片，可以保留不同的说法。按下面的格式填写，每段都会从原图独立开始。</p><pre>【叙述者：我】
+只记得我们牵着手，其他都淡了。
+
+【叙述者：你】
+我记得背后的光，人物已经模糊。</pre></details></div></div>
+<div class="editorial-row action-row"><div></div><div class="content-column action-content"><p class="privacy-note">照片与回忆将用于 AI 分析及重构</p><button id="generate" type="submit" class="primary-action" disabled>生成 <span aria-hidden="true">→</span></button></div></div>
+<p id="form-error" class="error form-error" role="alert" hidden></p>
+</form>
+<footer class="input-footer"><span>AN EXPERIMENT IN PHOTOGRAPHIC MEMORY</span><span>原始影像 / 主观回忆</span></footer>
+</section>
+<section id="reconstruction-page" class="page" aria-label="重构影像" hidden>
+<div class="reconstruction-heading"><h1>RECONSTRUCTION</h1><span id="counter" aria-live="polite">— / —</span></div>
+<div id="stage-frame" class="stage-frame" aria-label="重构照片"><p id="empty-stage">回忆正在形成影像</p></div>
+<div class="stage-meta"><nav id="stage-nav" aria-label="选择已完成的阶段照片"></nav><p id="stage-label"></p></div>
+<div class="progress-area"><p id="progress" role="status" aria-live="polite">正在准备…</p><p id="result-error" class="error" role="alert" hidden></p><button id="retry-view" class="quiet-button" type="button" hidden>返回修改 →</button><details id="process-notes" hidden><summary>查看处理记录</summary><p id="process-detail"></p></details></div>
+<section id="composite-section" aria-labelledby="composite-title" hidden><h2 id="composite-title">COMPOSITE / FINAL</h2><div class="composite-frame"><img id="composite-image" alt="原图与各重构阶段的条带拼合成品"></div></section>
+<div id="result-actions" class="result-actions" hidden><a id="download" class="primary-action" download="memory-reconstruction.zip">下载全部 <span aria-hidden="true">↓</span></a><button id="restart" type="button" class="quiet-button">重新开始</button></div>
+</section>
+</main>
+</body></html>
